@@ -108,6 +108,6 @@ public class Planet{
 	 }
 	 // draw the planet
 	 public void draw(){
-	 	StdDraw.picture(this.xxPos, this.yyPos, imgFileName);
+	 	StdDraw.picture(this.xxPos, this.yyPos, "/images/"+imgFileName);
 	 }
 }

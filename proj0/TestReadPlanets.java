@@ -11,7 +11,7 @@ public class TestReadPlanets {
     /** Checks to make sure that readPlanets() works perfectly. */
     private static String checkReadPlanets() {
         System.out.println("Checking readPlanets...");
-        String planetsTxtPath = "./data/planets.txt";
+        String planetsTxtPath = ".//data//planets.txt";
         /* If the following line fails to compile, you probably need to make
          * a certain method static! */
         Planet[] actualOutput = NBody.readPlanets(planetsTxtPath);
