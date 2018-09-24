@@ -24,6 +24,16 @@
  		size = 1;
  	}
 
+ 	/** constructor that takes in an array of integers*/
+ 	public SLList(int[] a){
+ 		int i = 0;
+ 		sentinel = new IntNode(63, null);
+ 		size = 0;
+ 		for (i=0;i<a.length;i++){
+ 			this.addLast(a[i]);
+ 		}
+ 	}
+
  	/** Creates an empty SLList */
  	public SLList(){
  		sentinel = new IntNode(63, null);
@@ -90,13 +100,11 @@
 
  	public static void main(String[] args){
  		/* Creates a list of one integer, namely 10 */
- 		SLList L = new SLList(15);
- 		L.addFirst(10);
- 		L.addFirst(5);
- 		L.addLast(20);
+ 		SLList L = new SLList(new int[] {5, 10, 15, 20});
  		System.out.println(L.getFirst());
  		System.out.println("size of SLList is: " + L.size());
  		L.deleteFirst();
  		System.out.println("size of SLList is: " + L.size());
+
  	}
  }
