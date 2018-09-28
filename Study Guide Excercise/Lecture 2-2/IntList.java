@@ -52,6 +52,30 @@ public class IntList{
 		}
 	}
 
+	/* add square value of each item in the list when adding a new item
+	 */
+	public void addSquare(int n){
+		/** if there is only one item in the list */
+		if(this.rest==null){
+			IntList temp = new IntList(n, null);
+			this.rest = new IntList(this.first*this.first, temp);
+			return;
+		} else {
+		IntList prev = this.rest;
+		IntList temp = new IntList(n, null);
+		this.rest = new IntList(this.first*this.first, prev);
+		/** if there is more items after the pointer */
+		while(prev.rest!=null){
+			IntList next = prev.rest;
+			prev.rest = new IntList(prev.first*prev.first,next);
+			prev = next;
+		}
+		/** no more item after the pointer */
+		temp = new IntList(n, null);
+		prev.rest = new IntList(prev.first*prev.first, temp);
+	}
+}
+
 	/* return the size of the linked list */
 	public int size(){
 		IntList p = this.rest;
@@ -79,6 +103,13 @@ public class IntList{
 
 	public static void main(String[] args){
 		IntList L = new IntList(10, null);
+		L.addSquare(5);
+		L.printList();
+		L.addSquare(5);
+		L.printList();
+		L.addSquare(2);
+		L.printList();
+		/*
 		L = new IntList(10, L);
 		L = new IntList(5, L);
 		L = new IntList(5, L);
@@ -91,5 +122,6 @@ public class IntList{
 		L.addAdjecent();
 		L.printList();
 		System.out.println("size after addAdjecent: " + L.size());
+		*/
 	}
 }
