@@ -91,23 +91,30 @@ public class LinkedListDeque<ItemType> {
         // System.out.println("End of List...");
     }
     /** remove the first item in the list*/
-    public void removeFirst(){
+    public ItemType removeFirst(){
         if(sentinel.next==sentinel){
             System.out.println("It's already an empty list...");
+            return null;
         } else {
             size--;
+            ItemType temp = sentinel.next.item;
             sentinel.next = sentinel.next.next;
             sentinel.next.prev = sentinel;
+            return temp;
         }
     }
     /** remove the last item in the list */
-    public void removeLast(){
+    public ItemType removeLast(){
         if(sentinel.next==sentinel){
             System.out.println("It's already an empty list...");
+            return null;
         } else {
             size--;
+            ItemType temp;
+            temp = sentinel.prev.item;
             sentinel.prev = sentinel.prev.prev;
             sentinel.prev.next = sentinel;
+            return temp;
         }
     }
 
