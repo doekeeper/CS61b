@@ -1,8 +1,8 @@
 /** Project 1A for CS 61b; The intent is to create a doubly linked list (DLList)
- * @param <ItemType> - the type of data stored in the DLList
+ * @param <T> - the type of data stored in the DLList
  */
 
-public class LinkedListDeque<ItemType> {
+public class LinkedListDeque<T> {
 
     /** fields required for DLList */
     private int size;           // store the size of DLList
@@ -11,15 +11,15 @@ public class LinkedListDeque<ItemType> {
     /** nested class Node for creating backbone
      * of individual node including Node prev / next and stored item;
      */
-    class Node{
+    private class Node{
         Node prev;
-        ItemType item;
+        T item;
         Node next;
-        public Node(ItemType item){
+        public Node(T item){
             this.item = item;
         }
         public Node(){}
-        public ItemType getRecursiveHelper(int index){
+        public T getRecursiveHelper(int index){
             if (index == 0){
                 return this.next.item;
             } else {
@@ -34,19 +34,20 @@ public class LinkedListDeque<ItemType> {
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
     }
-    /** Constructor for LinkedListDeque with item */
-    public LinkedListDeque(ItemType item){
+    /** Constructor for LinkedListDeque with item
+    public LinkedListDeque(T item){
         size = 1;
         sentinel.next = new Node(item);
         sentinel.next.next = sentinel;
         sentinel.next.prev = sentinel;
         sentinel.prev = sentinel.next;
     }
+     */
 
     /** add item to the front of the list
      * @param item - item to be added to the list
      */
-    public void addFirst(ItemType item){
+    public void addFirst(T item){
         size++;
         Node p = sentinel.next;             // temporary pointer
         sentinel.next = new Node(item);     // add new Node with new item to sentinel.next (1st place in DLList)
@@ -58,7 +59,7 @@ public class LinkedListDeque<ItemType> {
     /** add item to the end of the list
      * @param item
      */
-    public void addLast(ItemType item){
+    public void addLast(T item){
         size++;
         sentinel.prev.next = new Node(item);        // add new Node to the current last Node's next
         sentinel.prev.next.prev = sentinel.prev;    // newly added Node's prev points to earlier Node
@@ -91,26 +92,26 @@ public class LinkedListDeque<ItemType> {
         // System.out.println("End of List...");
     }
     /** remove the first item in the list*/
-    public ItemType removeFirst(){
+    public T removeFirst(){
         if(sentinel.next==sentinel){
             System.out.println("It's already an empty list...");
             return null;
         } else {
             size--;
-            ItemType temp = sentinel.next.item;
+            T temp = sentinel.next.item;
             sentinel.next = sentinel.next.next;
             sentinel.next.prev = sentinel;
             return temp;
         }
     }
     /** remove the last item in the list */
-    public ItemType removeLast(){
+    public T removeLast(){
         if(sentinel.next==sentinel){
             System.out.println("It's already an empty list...");
             return null;
         } else {
             size--;
-            ItemType temp;
+            T temp;
             temp = sentinel.prev.item;
             sentinel.prev = sentinel.prev.prev;
             sentinel.prev.next = sentinel;
@@ -122,7 +123,7 @@ public class LinkedListDeque<ItemType> {
      * 0th item is the first item in the list
      * @param index - position in the list
      */
-    public ItemType get(int index){
+    public T get(int index){
         if (index<0){
             System.out.println("Input is not valid, index has to be zero or positive integer. Please re-enter...");
             return null;
@@ -141,7 +142,7 @@ public class LinkedListDeque<ItemType> {
             return p.next.item;
         }
     }
-    public ItemType getRecursive(int index){
+    public T getRecursive(int index){
         return sentinel.getRecursiveHelper(index);
     }
 
