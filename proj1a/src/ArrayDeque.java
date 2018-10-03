@@ -1,16 +1,16 @@
 
-public class ArrayDeque<ItemType> {
-    int size;
-    int nextFirst;
-    int nextLast;
-    ItemType[] items;
+public class ArrayDeque<T> {
+    private int size;
+    private int nextFirst;
+    private int nextLast;
+    private T[] items;
 
     /** constructor
      *
      */
     public ArrayDeque(){
         size = 0;
-        items = (ItemType[]) new Object[8];
+        items = (T[]) new Object[8];
         nextFirst = items.length-1;
         nextLast = 0;
     }
@@ -18,7 +18,7 @@ public class ArrayDeque<ItemType> {
      * activated when current arraylist is full
      */
     private void resize(int size){
-        ItemType[] a = (ItemType[]) new Object[size];
+        T[] a = (T[]) new Object[size];
         if (nextFirst<nextLast){
             System.arraycopy(items,nextFirst+1,a,nextFirst+1, size());
         } else {
@@ -42,7 +42,7 @@ public class ArrayDeque<ItemType> {
     /** add item to the beginning of the list
      * warning: haven't considered the case when the array needs to be expanded (size = items.length)
      */
-    public void addFirst(ItemType item){
+    public void addFirst(T item){
         if (size==items.length-1){
             resize(size*2);
         }
@@ -58,7 +58,7 @@ public class ArrayDeque<ItemType> {
     /** add item to the end of the list
      * warning: haven't considered the case when the array needs to be expanded (size = items.length)
      */
-    public void addLast(ItemType item){
+    public void addLast(T item){
         if(size==items.length-1){
             resize(size*2);
         }
@@ -111,13 +111,13 @@ public class ArrayDeque<ItemType> {
     }
 
     /** remove the first item in the list */
-    public ItemType removeFirst(){
+    public T removeFirst(){
         if(isEmpty()){
             System.out.println("This is empty list");
             return null;
         } else {
             size--;
-            ItemType temp;
+            T temp;
             if(nextFirst+1==items.length){
                 temp = items[0];
                 nextFirst = 0;
@@ -135,13 +135,13 @@ public class ArrayDeque<ItemType> {
     }
 
     /** remove the last item in the list */
-    public ItemType removeLast(){
+    public T removeLast(){
         if(isEmpty()){
             System.out.println("Empty List...");
             return null;
         } else {
             size--;
-            ItemType temp;
+            T temp;
             if(nextLast==0){
                 temp = items[items.length-1];
                 nextLast = items.length-1;
@@ -159,7 +159,7 @@ public class ArrayDeque<ItemType> {
     }
 
     /** get the item at the given index */
-    public ItemType get(int index){
+    public T get(int index){
         if (index>=0 && index<size()){
             if (nextFirst+1+index<items.length){
                 return items[nextFirst+1+index];
