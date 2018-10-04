@@ -139,6 +139,7 @@ public class IntList {
                 reverseA = new IntList(p.first, reverseA);
                 p = p.rest;
             }
+            A.rest = null;
             return new IntList(p.first, reverseA);
         }
     }
