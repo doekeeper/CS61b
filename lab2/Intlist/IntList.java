@@ -118,8 +118,10 @@ public class IntList {
         	if (B == null){
         		return null;
         	} else {
-        		return B;
-        	}
+                return B;
+            }
+        } else if(B == null){
+            return A;
         } else {
         	IntList res = new IntList(A.first, null);
         	IntList ptr = res;
