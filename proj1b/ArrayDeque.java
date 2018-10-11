@@ -1,5 +1,5 @@
 
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Deque<T>{
     private int size;
     private int nextFirst;
     private int nextLast;
@@ -17,10 +17,12 @@ public class ArrayDeque<T> {
     /** resize the arraylist (items) to store more item
      * activated when current arraylist is full
      */
-    private void resize(int size){
-        T[] a = (T[]) new Object[size];
+    private void resize(int size, int newArrayLength){
+        T[] a = (T[]) new Object[newArrayLength];
         if (nextFirst<nextLast){
-            System.arraycopy(items,nextFirst+1,a,nextFirst+1, size());
+            System.arraycopy(items,nextFirst+1,a,0, size());
+            nextFirst = newArrayLength-1;
+            nextLast = size();
         } else {
             if(nextFirst!=items.length-1 && nextLast!=0){
                 System.arraycopy(items, 0,a,0,nextLast);
@@ -42,9 +44,10 @@ public class ArrayDeque<T> {
     /** add item to the beginning of the list
      * warning: haven't considered the case when the array needs to be expanded (size = items.length)
      */
+    @Override
     public void addFirst(T item){
         if (size==items.length-1){
-            resize(size*2);
+            resize(size, size*2);
         }
         items[nextFirst] = item;
         size++;
@@ -58,9 +61,10 @@ public class ArrayDeque<T> {
     /** add item to the end of the list
      * warning: haven't considered the case when the array needs to be expanded (size = items.length)
      */
+    @Override
     public void addLast(T item){
         if(size==items.length-1){
-            resize(size*2);
+            resize(size,size*2);
         }
         items[nextLast]=item;
         size++;
@@ -72,6 +76,7 @@ public class ArrayDeque<T> {
     }
 
     /** check if the list is empty */
+    @Override
     public boolean isEmpty(){
         if(nextFirst==items.length-1 && nextLast==0) {
             return true;
@@ -85,12 +90,14 @@ public class ArrayDeque<T> {
     }
 
     /** return size of the list */
+    @Override
     public int size(){
         return size;
     }
 
     /** print the whole list */
-    public void printList(){
+    @Override
+    public void printDeque(){
         System.out.println("Printing list...");
         int p = nextFirst+1;                        // let p points to the location of first item (nextFirst+1);
         while (p<items.length){                     // if p location exceed the length of list, then move p to position 0 of the array; if not, proceed
@@ -111,6 +118,7 @@ public class ArrayDeque<T> {
     }
 
     /** remove the first item in the list */
+    @Override
     public T removeFirst(){
         if(isEmpty()){
             System.out.println("This is empty list");
@@ -128,13 +136,14 @@ public class ArrayDeque<T> {
                 items[nextFirst]=null;
             }
             if((double) size/items.length<0.25){
-                resize(items.length/2);
+                resize(size, items.length/2);
             }
             return temp;
         }
     }
 
     /** remove the last item in the list */
+    @Override
     public T removeLast(){
         if(isEmpty()){
             System.out.println("Empty List...");
@@ -152,13 +161,14 @@ public class ArrayDeque<T> {
                 items[nextLast]=null;
             }
             if((double) size/items.length<0.25){
-                resize(items.length/2);
+                resize(size, items.length/2);
             }
             return temp;
         }
     }
 
     /** get the item at the given index */
+    @Override
     public T get(int index){
         if (index>=0 && index<size()){
             if (nextFirst+1+index<items.length){
@@ -182,11 +192,11 @@ public class ArrayDeque<T> {
         L.addFirst(0);
         L.addFirst(-5);
         L.addFirst(-10);
-        L.printList();
+        L.printDeque();
         L.addLast(15);
         L.addLast(20);
         L.addLast(25);
-        L.printList();
+        L.printDeque();
        // L.addLast(30);
        // L.addLast(35);
         L.removeFirst();
@@ -194,7 +204,7 @@ public class ArrayDeque<T> {
         L.removeFirst();
         L.removeFirst();
         L.removeFirst();
-        L.printList();
+        L.printDeque();
         System.out.println(L.get(1));
 
     }

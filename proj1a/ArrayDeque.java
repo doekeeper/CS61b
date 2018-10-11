@@ -1,5 +1,5 @@
 
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Deque<T>{
     private int size;
     private int nextFirst;
     private int nextLast;
@@ -90,7 +90,7 @@ public class ArrayDeque<T> {
     }
 
     /** print the whole list */
-    public void printList(){
+    public void printDeque(){
         System.out.println("Printing list...");
         int p = nextFirst+1;                        // let p points to the location of first item (nextFirst+1);
         while (p<items.length){                     // if p location exceed the length of list, then move p to position 0 of the array; if not, proceed
@@ -194,7 +194,7 @@ public class ArrayDeque<T> {
         L.removeFirst();
         L.removeFirst();
         L.removeFirst();
-        L.printList();
+        L.printDeque();
         System.out.println(L.get(1));
 
     }
