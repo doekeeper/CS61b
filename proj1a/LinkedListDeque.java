@@ -145,22 +145,4 @@ public class LinkedListDeque<T> {
     public T getRecursive(int index){
         return sentinel.getRecursiveHelper(index);
     }
-
-
-
-    public static void main(String[] args){
-        LinkedListDeque<Integer> L = new LinkedListDeque();
-        System.out.println("Is the list empty: "+L.isEmpty());
-        System.out.println("size of the list: " + L.size());
-        L.addFirst(5);
-        L.addFirst(10);
-        L.addLast(0);
-        System.out.println("Is the list empty: "+L.isEmpty());
-        System.out.println("size of the list: " + L.size());
-        L.printDeque();
-        System.out.println("size of the list: " + L.size());
-        L.printDeque();
-        System.out.println("3th item in the list is: "+L.getRecursive(3));
-        L.printDeque();
-    }
 }
