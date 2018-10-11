@@ -19,7 +19,11 @@ public class ArrayDeque<T> {
      */
     private void resize(int size, int newArrayLength){
         T[] a = (T[]) new Object[newArrayLength];
-        if (nextFirst<nextLast){
+        if (size == 0) {
+            nextFirst = 0;
+            nextLast = 0;
+        }
+        else if (nextFirst<nextLast){
             System.arraycopy(items,nextFirst+1,a,0, size());
             nextFirst = newArrayLength-1;
             nextLast = size();
@@ -46,7 +50,7 @@ public class ArrayDeque<T> {
      */
     public void addFirst(T item){
         if (size==items.length-1){
-            resize(size, size*2);
+            resize(size, items.length*2);
         }
         items[nextFirst] = item;
         size++;
@@ -62,7 +66,7 @@ public class ArrayDeque<T> {
      */
     public void addLast(T item){
         if(size==items.length-1){
-            resize(size,size*2);
+            resize(size,items.length*2);
         }
         items[nextLast]=item;
         size++;
@@ -75,14 +79,10 @@ public class ArrayDeque<T> {
 
     /** check if the list is empty */
     public boolean isEmpty(){
-        if(nextFirst==items.length-1 && nextLast==0) {
+        if (size == 0) {
             return true;
         } else {
-            if(nextFirst+1==nextLast){
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 
@@ -172,32 +172,5 @@ public class ArrayDeque<T> {
             System.out.println("Invalid input, index is out of range");
             return null;
         }
-    }
-
-
-    public static void main(String[] args){
-        ArrayDeque L = new ArrayDeque<Integer>();
-        System.out.println("Is the list empty: "+ L.isEmpty());
-        System.out.println("Size of the list: " + L.size());
-        L.addFirst(10);
-        L.addFirst(5);
-        L.addFirst(0);
-        L.addFirst(-5);
-        L.addFirst(-10);
-        L.printDeque();
-        L.addLast(15);
-        L.addLast(20);
-        L.addLast(25);
-        L.printDeque();
-       // L.addLast(30);
-       // L.addLast(35);
-        L.removeFirst();
-        L.removeFirst();
-        L.removeFirst();
-        L.removeFirst();
-        L.removeFirst();
-        L.printDeque();
-        System.out.println(L.get(1));
-
     }
 }
