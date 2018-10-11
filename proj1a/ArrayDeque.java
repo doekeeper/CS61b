@@ -1,5 +1,5 @@
 
-public class ArrayDeque<T> implements Deque<T>{
+public class ArrayDeque<T> {
     private int size;
     private int nextFirst;
     private int nextLast;
@@ -17,10 +17,12 @@ public class ArrayDeque<T> implements Deque<T>{
     /** resize the arraylist (items) to store more item
      * activated when current arraylist is full
      */
-    private void resize(int size){
-        T[] a = (T[]) new Object[size];
+    private void resize(int size, int newArrayLength){
+        T[] a = (T[]) new Object[newArrayLength];
         if (nextFirst<nextLast){
-            System.arraycopy(items,nextFirst+1,a,nextFirst+1, size());
+            System.arraycopy(items,nextFirst+1,a,0, size());
+            nextFirst = newArrayLength-1;
+            nextLast = size();
         } else {
             if(nextFirst!=items.length-1 && nextLast!=0){
                 System.arraycopy(items, 0,a,0,nextLast);
@@ -44,7 +46,7 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     public void addFirst(T item){
         if (size==items.length-1){
-            resize(size*2);
+            resize(size, size*2);
         }
         items[nextFirst] = item;
         size++;
@@ -60,7 +62,7 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     public void addLast(T item){
         if(size==items.length-1){
-            resize(size*2);
+            resize(size,size*2);
         }
         items[nextLast]=item;
         size++;
@@ -128,7 +130,7 @@ public class ArrayDeque<T> implements Deque<T>{
                 items[nextFirst]=null;
             }
             if((double) size/items.length<0.25){
-                resize(items.length/2);
+                resize(size, items.length/2);
             }
             return temp;
         }
@@ -152,7 +154,7 @@ public class ArrayDeque<T> implements Deque<T>{
                 items[nextLast]=null;
             }
             if((double) size/items.length<0.25){
-                resize(items.length/2);
+                resize(size, items.length/2);
             }
             return temp;
         }
@@ -182,11 +184,11 @@ public class ArrayDeque<T> implements Deque<T>{
         L.addFirst(0);
         L.addFirst(-5);
         L.addFirst(-10);
-        L.printList();
+        L.printDeque();
         L.addLast(15);
         L.addLast(20);
         L.addLast(25);
-        L.printList();
+        L.printDeque();
        // L.addLast(30);
        // L.addLast(35);
         L.removeFirst();
