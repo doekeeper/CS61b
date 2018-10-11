@@ -7,17 +7,11 @@ public class TestArrayDeque {
     public void test() {
         ArrayDeque L = new ArrayDeque<Integer>();
         L.addFirst(0);
-        assertFalse(L.isEmpty());
-        assertEquals(0, L.removeFirst());
+        assertEquals(0, L.removeLast());
         assertTrue(L.isEmpty());
         L.addFirst(4);
-        L.isEmpty();
-        assertEquals(4, L.removeFirst());
+        assertEquals(4, L.removeLast());
         assertTrue(L.isEmpty());
-        L.addFirst(8);
-        assertEquals(8, L.removeFirst());
-        L.addFirst(10);
-
     }
 
 }

@@ -19,7 +19,7 @@ public class ArrayDeque<T> {
      */
     private void resize(int size, int newArrayLength){
         T[] a = (T[]) new Object[newArrayLength];
-        if (size == 0) {
+        if (newArrayLength == 1) {
             nextFirst = 0;
             nextLast = 0;
         }
@@ -49,11 +49,11 @@ public class ArrayDeque<T> {
      * warning: haven't considered the case when the array needs to be expanded (size = items.length)
      */
     public void addFirst(T item){
-        if (size==items.length-1){
+        size ++;
+        if (size==items.length){
             resize(size, items.length*2);
         }
         items[nextFirst] = item;
-        size++;
         if(nextFirst>0){
             nextFirst--;
         } else{
@@ -65,11 +65,11 @@ public class ArrayDeque<T> {
      * warning: haven't considered the case when the array needs to be expanded (size = items.length)
      */
     public void addLast(T item){
-        if(size==items.length-1){
+        size ++;
+        if(size==items.length){
             resize(size,items.length*2);
         }
         items[nextLast]=item;
-        size++;
         if(nextLast<items.length-1){
             nextLast++;
         } else {
