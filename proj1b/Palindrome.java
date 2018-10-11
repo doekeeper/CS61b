@@ -30,4 +30,20 @@ public class Palindrome {
 
         return true;
     }
+
+    /** return true if input string is palindrome
+     * @param word
+     * @param cc
+     * @return boolean value
+     */
+    public boolean isPalindrome(String word, CharacterComparator cc) {
+        Deque<Character> charDeque = wordToDeque(word);
+        while(charDeque.size()>1) {
+            if(cc.equalChars(charDeque.removeFirst(), charDeque.removeLast())) {}
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
 }
