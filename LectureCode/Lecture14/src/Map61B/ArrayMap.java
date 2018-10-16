@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.ArrayList;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.util.Iterator;
 
 /**
  * An array based implementation of the Map61B class.
  */
-public class ArrayMap<K, V> implements Map61B<K, V> {
+public class ArrayMap<K, V> implements Map61B<K, V>, Iterable<K> {
 
     private K[] keys;
     private V[] values;
@@ -18,6 +19,30 @@ public class ArrayMap<K, V> implements Map61B<K, V> {
     public ArrayMap() {
         keys = (K[]) new Object[100];
         values = (V[]) new Object[100];
+    }
+
+    public Iterator<K> iterator(){
+        return new KeyIterator();
+    }
+
+    public class KeyIterator implements Iterator<K>{
+
+        private int wizardPosition;
+
+        public KeyIterator() {
+            wizardPosition = 0;
+        }
+
+        public boolean hasNext() {
+            return wizardPosition<size;
+        }
+
+        public K next() {
+            K returnVal = keys[wizardPosition];
+            wizardPosition ++;
+            return returnVal;
+
+        }
     }
 
     /** Return the index of the given key if it exists,
@@ -53,6 +78,9 @@ public class ArrayMap<K, V> implements Map61B<K, V> {
 
     @Override
     public V get(K key) {
+        if (keyIndex(key) == -1) {
+            throw new IllegalArgumentException("The key provided " + key + " was not in ArrayMap.");
+        }
         return values[keyIndex(key)];
     }
 
