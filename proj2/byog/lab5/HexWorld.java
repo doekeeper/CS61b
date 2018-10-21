@@ -119,7 +119,7 @@ public class HexWorld {
         hex.addHexagon(3, Tileset.GRASS,4, 4, world);
         hex.addHexagon(3, Tileset.MOUNTAIN, 8, 10, world);
         hex.addHexagon(4, Tileset.FLOWER, 12, 14, world);
-        hex.addHexagon(3, Tileset.WATER, 12, 4, world);
+        hex.addHexagon(3, Tileset.RADIATION, 12, 4, world);
         ter.renderFrame(world);
     }
 }
