@@ -10,7 +10,7 @@ import java.util.Iterator;
 /**
  * An array based implementation of the Map61B class.
  */
-public class ArrayMap<K, V> implements Map61B<K, V>, Iterable<K> {
+public class ArrayMap<K, V> implements Map61B<K, V>, Iterable <K> {
 
     private K[] keys;
     private V[] values;
@@ -21,29 +21,28 @@ public class ArrayMap<K, V> implements Map61B<K, V>, Iterable<K> {
         values = (V[]) new Object[100];
     }
 
-    public Iterator<K> iterator(){
+    public Iterator<K> iterator() {
         return new KeyIterator();
     }
-
-    public class KeyIterator implements Iterator<K>{
-
+    /* man-made Iterator(nested class) */
+    class KeyIterator implements Iterator <K> {
         private int wizardPosition;
 
         public KeyIterator() {
             wizardPosition = 0;
         }
-
         public boolean hasNext() {
-            return wizardPosition<size;
+            return wizardPosition < size;
         }
 
         public K next() {
             K returnVal = keys[wizardPosition];
             wizardPosition ++;
             return returnVal;
-
         }
+
     }
+
 
     /** Return the index of the given key if it exists,
      * -1 otherwise.

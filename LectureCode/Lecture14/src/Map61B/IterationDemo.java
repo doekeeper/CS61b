@@ -1,5 +1,6 @@
 package Map61B;
 
+import java.util.Iterator;
 public class IterationDemo {
 
     public static void main(String[] args) {
@@ -9,8 +10,11 @@ public class IterationDemo {
         am.put("syrups", 10);
         am.put("kingdom", 10);
 
-        for (String s: am) {
+        Iterator<String> it = am.iterator();
+
+        for (String s : am) {
             System.out.println(s);
         }
     }
 }
+

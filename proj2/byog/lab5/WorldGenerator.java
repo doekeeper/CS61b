@@ -1,4 +1,4 @@
-// out of bound exceptions - hot to handle exception well?
+// add hallway, continue
 
 package byog.lab5;
 
@@ -13,8 +13,8 @@ public class WorldGenerator {
     /**
      * Try to generate a world using existing library.
      */
-    private static final int WIDTH = 60;
-    private static final int HEIGHT = 30;
+    private static final int WIDTH = 80;
+    private static final int HEIGHT = 50;
     private int SEED;
     private static final Random RANDOM = new Random();
 
@@ -33,7 +33,7 @@ public class WorldGenerator {
     public TETile[][] generateRandomWorld(TETile[][] world) {
         TETile[][] temp = worldInit(world);             // initialize world with NOTHING on each tile
         temp = addRooms(temp);                          // add rooms on the map
-        // TETile[][] completeWorld = addHallways(temp);   // add hallway connecting rooms on the map
+        temp = addHallways(temp);   // add hallway connecting rooms on the map
         return temp;
     }
     /* filled world with square room with random size, and location, number of rooms are determined by attempts
@@ -43,14 +43,14 @@ public class WorldGenerator {
      */
 
     public TETile[][] addRooms(TETile[][] world) {
-        int numberOfRooms = 10000;
-        int roomWIDTHmin = 2;       // set room minimum width to 2
-        int roomWIDTHmax = 12;       // set room maximum width to 8
-        int roomHEIGHTmin = 2;      // set room minimum height to 2
-        int roomHEIGHTmax = 8;      // set room maximum height to 6
+        int numberOfRooms = 100000;
+        int roomWIDTHmin = 3;       // set room minimum width to 2
+        int roomWIDTHmax = 30;       // set room maximum width to 8
+        int roomHEIGHTmin = 3;      // set room minimum height to 2
+        int roomHEIGHTmax = 15;      // set room maximum height to 6
         while (numberOfRooms > 0) {
-            int rowPos = RANDOM.nextInt(30);
-            int colPos = RANDOM.nextInt(60);
+            int rowPos = RANDOM.nextInt(HEIGHT);
+            int colPos = RANDOM.nextInt(WIDTH);
             int roomWIDTH = RANDOM.nextInt(roomWIDTHmax - roomWIDTHmin) + roomWIDTHmin;
             int roomHEIGHT = RANDOM.nextInt(roomHEIGHTmax - roomHEIGHTmin) + roomWIDTHmin;
             addRoom(world, rowPos, colPos, roomWIDTH, roomHEIGHT);
@@ -65,10 +65,10 @@ public class WorldGenerator {
          * offset = -1 - rooms overlap
          * offset = 0 - it is possible that there is no space between two rooms
          * offset = 1 - rooms are isolated, at least 1 line between any two rooms*/
-        int offset = 0;
+        int offset = 3;
 
         // location check - if proposed room is out of bound, don't add the room
-        if (row - (1 + Math.abs(offset)) < 0 || row + roomHEIGHT + (1 + Math.abs(offset)) >= 30 || col - (1 + Math.abs(offset)) < 0 || col + roomWIDTH + (1 + Math.abs(offset)) >= 60) {
+        if (row - (1 + Math.abs(offset)) < 0 || row + roomHEIGHT + (1 + Math.abs(offset)) >= HEIGHT || col - (1 + Math.abs(offset)) < 0 || col + roomWIDTH + (1 + Math.abs(offset)) >= WIDTH) {
             return; // exit method if the room is out of bound
         }
         // space check - if world still has enough space for the new room created, add the room; discard the room otherwise
@@ -79,6 +79,9 @@ public class WorldGenerator {
              * 2. add a layer of space (eg, NOTHING) with roomWIDTH and roomHEIGHT, at starting point(row, col)
              */
             addWALLS(world, row - 1, col - 1, roomWIDTH + 2, roomHEIGHT + 2);
+            for (int i = 2; i > 0; i--) {
+                addDoor(world, row - 1, col - 1, roomWIDTH + 2, roomHEIGHT + 2);
+            }
             addSpace(world, row, col, roomWIDTH, roomHEIGHT, Tileset.FLOOR);
         }
     }
@@ -101,6 +104,31 @@ public class WorldGenerator {
             }
         }
     }
+    // add one door in each room
+    public void addDoor(TETile[][] world, int row, int col, int wallWIDTH, int wallHEIGHT) {
+        int cond = RANDOM.nextInt(4);
+        int rowPos = row;
+        int colPos = col + 1;
+        switch(cond) {
+            case 0:
+                rowPos = row;
+                colPos = RANDOM.nextInt(wallWIDTH - 2) + col + 1;
+                break;
+            case 1:
+                rowPos = row + wallHEIGHT - 1;
+                colPos = RANDOM.nextInt(wallWIDTH - 2) + col + 1;
+                break;
+            case 2:
+                rowPos = RANDOM.nextInt(wallHEIGHT - 2) + row + 1;
+                colPos = col;
+                break;
+            case 3:
+                rowPos = RANDOM.nextInt(wallHEIGHT - 2) + row + 1;
+                colPos = col + wallWIDTH - 1;
+                break;
+        }
+        world[colPos][rowPos] = Tileset.UNLOCKED_DOOR;
+    }
 
     public void addSpace(TETile[][] world, int row, int col, int spaceWIDTH, int spaceHEIGHT, TETile TileSetType) {
         for (int i = row; i < row + spaceHEIGHT; i++) {
@@ -118,7 +146,33 @@ public class WorldGenerator {
     /* add hallways in the world to connect rooms
      */
     public TETile[][] addHallways(TETile[][] world) {
-        return null;
+        int rowPos;
+        int colPos;
+        for(rowPos = 1; rowPos < HEIGHT - 1; rowPos++) {
+            for (colPos = 1; colPos < WIDTH - 1; colPos++) {
+                if (isNeighborEmpty(rowPos, colPos, world)) {
+                    world[colPos][rowPos] = Tileset.FLOOR;
+                }
+            }
+        }
+        return world;
+    }
+
+    /*  check the status of neighbours
+     * return true, if nearby tiles are all empty (NOTHING)
+     * return false, otherwise
+     */
+    private boolean isNeighborEmpty(int row, int col, TETile[][] world) {
+        for (int i = -1; i < 2; i++) {
+            int rowPos = Math.min(HEIGHT - 1, Math.max(0, row + i));
+            for (int j = -1; j < 2; j++) {
+                int colPos = Math.min(WIDTH - 1, Math.max(0, col + j));
+                if (world[colPos][rowPos] != Tileset.NOTHING) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /* random initialization */
