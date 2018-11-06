@@ -3,10 +3,11 @@ package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import java.util.Random;
+import java.io.Serializable;
 
 /* class Map contains fields and methods for generating an 2D-array dungeon map.
  */
-public class Map {
+public class Map implements Serializable {
 
     private TETile[][] map;
     private static final int WIDTH = 80;                // width of the map     (col)
@@ -15,6 +16,7 @@ public class Map {
     private static final int ROOMINDEX = 1000;          // indicate the complexity of ROOM, room is more complex with higher index
     private int colPos;
     private int rowPos;
+    private TETile[][] dungeonMap;
 
     /* fill the map with Tileset.NOTHING
      * @return 2D map which is filled with Tileset.NOTHING
@@ -225,12 +227,13 @@ public class Map {
      * same map should be recreated with same seed
      */
     public TETile[][] generateDungeonMap() {
-        TETile[][] dungeonMap = initialize();               // create a 2D array map with WIDTH(80) * HEIGHT(50) and fill the array with Tileset.NOTHING
+        dungeonMap = initialize();                              // create a 2D array map with WIDTH(80) * HEIGHT(50) and fill the array with Tileset.NOTHING
         initialStartPoint(dungeonMap);                        // set active cell to the centre of map, set it to FLOOR and set a layer of WALL around it.
         generateHallways(dungeonMap);
         generateRooms(dungeonMap);
         return dungeonMap;
     }
+
 
 
     /* getters and setters */
@@ -254,6 +257,9 @@ public class Map {
     }
     public int getHEIGHT(){
         return HEIGHT;
+    }
+    public TETile[][] getDungeonMap() {
+        return dungeonMap;
     }
 
 }

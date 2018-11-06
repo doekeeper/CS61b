@@ -3,16 +3,22 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
+    TETile[][] world;
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 50;
+    Map map = new Map();
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        world = map.generateDungeonMap();
+        ter.renderFrame(world);
     }
 
     /**
@@ -34,5 +40,9 @@ public class Game {
 
         TETile[][] finalWorldFrame = null;
         return finalWorldFrame;
+    }
+
+    public TETile[][] getMap() {
+        return world;
     }
 }

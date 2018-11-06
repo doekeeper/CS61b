@@ -1,10 +1,12 @@
 package byog.Core;
 
 import byog.TileEngine.*;
+
+import java.io.Serializable;
 import java.util.Random;
 
 
-public class Room {
+public class Room implements Serializable {
     private int xDim;
     private int yDim;
 
