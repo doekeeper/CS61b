@@ -1,107 +1,234 @@
-public class QuickFindUF {
-	private int[] id;		//id[1] = component identifier of i
-	private int count;	// number of components
+/**
+ * A symbol table implemented using a left-leaning red-black BST.
+ * This is the 2-3 version
+ * This implementation implements only put, get, and contains.
+ * See RedBlackBST.java for a full implementation including delete.
+ */
 
-	/**
-	 * intializes an empty union-find data structure with sites {0} through {n-1}. 
-	 * Each site is initially in its own component.
-	 *
-	 * @param n the number of sites
-	 * @throws IllegalArgumentException if {n < 0}
-	 */
-	public QuickFindUF (int n) {
-		count = n;
-		id = new int[n];
-		for (int i = 0; i < n; i++) {
-			id[i] = i;
-		}
-	}
-	public int[] getIDArray() {
-	    return id;
+public class RedBlackLiteBST<Key extends Comparable<Key>, Value> {
+    private static final boolean RED = true;
+    private static final boolean BLACK = false;
+
+    private Node root;      // root of the BST;
+    private int n;          // number of key-value pairs in BST
+
+    // BST helper node data type
+    private class Node {
+        private Key key;        // key
+        private Value val;      // associated data
+        private Node left, right;    // links to left and right subtrees
+        private boolean color;      // color of parent link
+
+        public Node(Key key, Value val, boolean color) {
+            this.key = key;
+            this.val = val;
+            this.color = color;
+        }
     }
 
-	/**
-	 * Returns the number of components
-	 * @return the number of components (between {1} and {n})
-	 */
-	public int count() {
-		return count;
-	}
+    /**
+     * Standard BST search
+     */
 
-	/** 
-	 * Returns the components identifier for the components containing sites {p}.
-	 * 
-	 * @param p the integer representing one site
-	 * @return the component identifier for the component containing site {p}
-	 * @throws new IllegalArugmentException if {0 <= p < n}
-	 */
-	public int find(int p) {
-		validate(p);
-		return id[p];
-	}
+    // return value associated with the given key, or null if no such key exists
+    public Value get(Key key) {
+        return get(root, key);
+    }
+    private Value get(Node x, Key key) {
+        while (x != null) {
+            int cmp = key.compareTo(x.key);
+            if (cmp < 0) x = x.left;
+            else if (cmp > 0) x = x.right;
+            else return x.val;
+        }
+        return null;
+    }
 
-	// validate that p is valid index
-	private void validate (int p) {
-		int n = id.length;
-		if (p < 0 || p >= n) {
-			throw new IllegalArgumentException("index " + p + " is now between 0 and " + (n-1));
-		}
-	}
+    // is there a key-value pair in the symbol table with the given key?
+    public boolean contains(Key key) {
+        return get(key) != null;
+    }
 
-	/**
-	 * Returns true if the two sites are in the same components
-	 * @param p the integer representing one site
-	 * @param q the integer representing the other site
-	 * @return {true} if the two sites {p} and {q} are in the same components; {false} otherwise
-	 * @throws IllegalArgumentException uncless both {0 <= p < n} and {0 <= q < n}
-	 */
-	public boolean isConnected (int p, int q) {
-		validate (p);
-		validate (q);
-		return (id[p] == id[q]);
-	}
+    /**
+     * Red-Black tree insertion
+     */
+    public void put(Key key, Value val) {
+        root = insert(root, key, val);      // set root to 'insert(root, key, val)
+        root.color = BLACK;                 // set root.color to BLACK
+        // assert check();
+    }
 
-	/** Merges the components containing site {p} with the component containing site {q}
-	 *
-	 * @param p the integer representing one site
-	 * @param q the integer representing the other site
-	 * @throws IllegalArgumentException unless both {0 <= p < n} and {0 <= q < n}
-	 * 
-	 */
-	public void union (int p, int q) {
-		if (!isConnected(p, q)) {
-		    count--;
-		    int pID = id[p];
-		    int qID = id[q];
-			for (int i = 0; i < id.length; i++) {
-				if (id[i] == pID) {
-					id[i] = qID;
-				}
-			}
+    private Node insert(Node h, Key key, Value val) {
+        if (h == null) {
+            n++;
+            return new Node(key, val, RED);
+        }
 
-		}
-	}
+        int cmp = key.compareTo(h.key);
+        if (cmp < 0) h.left = insert(h.left, key, val);
+        else if (cmp > 0) h.right = insert(h.right, key, val);
+        else h.val = val;
 
-	/** Reads in a sequence of pairs of integers (between 0 and n-1) from standard input,
-	 * where each integer represents some sites;
-	 * if the sites are in different components, 
-	 * merge the two components and print the pair to standard outputs.
-	 * @param args the command-line arugments 
-	 */
-	public static void main(String[] args) {
-		int n = StdIn.readInt();
-		QuickFindUF uf = new QuickFindUF(n);
-		while (!StdIn.isEmpty()) {
-			int p = StdIn.readInt();
-			int q = StdIn.readInt();
-			if (uf.isConnected(p, q)) continue;
-			uf.union(p, q);
-			StdOut.println(p + " " + q);
-			StdOut.println(uf.count() + " components");
+        //fix up any right-leaning links
+        if (isRed(h.right) && !isRed(h.left))       h = rotateLeft(h);
+        if (isRed(h.left) && isRed(h.left.left))    h = rotateRight(h);
+        if (isRed(h.left) && isRed(h.right))        flipColors(h);
 
-		}
+        return h;
+    }
 
-	}
+    /**
+     * Red-Black Tree helper functions
+     */
 
+    // is node x red (and non-null)?
+    private boolean isRed(Node x) {
+        if (x == null) return false;
+        return x.color == RED;
+    }
+
+    // rotate right
+    private Node rotateRight(Node h) {
+        assert (h != null) && isRed(h.left);
+        Node x = h.left;
+        h.left = x.right;
+        x.right = h;
+        x.color = h.color;
+        h.color = RED;
+        return x;
+    }
+
+    // rotate left
+    private Node rotateLeft(Node h) {
+        assert (h != null) && isRed(h.right);
+        Node x = h.right;
+        h.right = x.left;
+        x.left = h;
+        x.color = h.color;
+        h.color = RED;
+        return x;
+    }
+
+    // precondition: two children are red, node is black
+    // postcondition: two children are black, node is red
+    private void flipColors(Node h) {
+        assert !isRed(h) && isRed(h.left) && isRed(h.right);
+        h.color = RED;
+        h.left.color = BLACK;
+        h.right.color = BLACK;
+    }
+
+    /**
+     * Utility functions
+     */
+
+    // return number of key-value pairs in symbol table
+    public int size() {
+        return n;
+    }
+
+    // is the symbol empty?
+    public boolean isEmpty() {
+        return n == 0;
+    }
+
+    // height of tree (1-node tre has height 0)
+    public int height() {return height(root);}
+    private int height(Node x) {
+        if (x == null) return -1;
+        return 1 + Math.max(height(x.left), height(x.right));
+    }
+
+    // return the smallest key; null if no such key
+    public Key min() { return min(root);}
+    private Key min(Node x) {
+        Key key = null;
+        while (x != null) {
+            key = x.key;
+            x = x.left;
+        }
+        return key;
+    }
+
+    // return the largest key; null if no such way
+    public Key max() { return max(root);}
+    private Key max(Node x) {
+        Key key = null;
+        while (x != null) {
+            key = x.key;
+            x = x.right;
+        }
+        return key;
+    }
+
+    /**
+     * Iterate using an inorder traversal; Iterating through N elements takes O(N) time.
+     */
+    public Iterable<Key> keys() {
+        Queue<Key> queue = new Queue<Key>();
+        keys(root, queue);
+        return queue;
+    }
+    private void keys(Node x, Queue<Key> queue) {
+        if (x == null) return;
+        keys(x.left, queue);
+        queue.enqueue(x.key);
+        keys(x.right, queue);
+    }
+
+    /**
+     * Check integrity of red-black tree data structure.
+     */
+
+    private boolean check() {
+        if (!isBST())             System.out.println("Not in symmetric order");
+        if (!is23())            System.out.println("Not a 2-3 tree");
+        if (!isBalanced())      System.out.println("Not balanced");
+        return isBST() && is23() && isBalanced();
+    }
+
+    // does this binary tree satisfy symmetric order?
+    // Note: this test also ensures that data structure is a binary tree since
+    // order is strict
+    private boolean isBST() {
+        return isBST(root, null, null);
+    }
+
+    // is the tree rooted at x a BST with keys strictly between min and max
+    // (if min or max is null, treat as empty constraint)
+    private boolean isBST(Node x, Key min, Key max) {
+        if (x == null) return true;
+        if (min != null && x.key.compareTo(min) <= 0) return false;
+        if (max != null && x.key.compareTo(max) <= 0) return false;
+        return isBST(x.left, min, x.key) && isBST(x.right, x.key, max);
+    }
+
+    // Does the tree have no red right links, and at most one (left)
+    // red links in a row on any path?
+    private boolean is23() { return is23(root);}
+    private boolean is23(Node x) {
+        if (x == null) return true;
+        if (isRed(x.right)) return false;
+        if (x != root && isRed(x) && isRed(x.left)) return false;
+        return is23(x.left) && is23(x.right);
+    }
+
+    // do all paths from root to leaf have same number of black edges?
+    private boolean isBalanced() {
+        int black = 0;      // number of black links on path from root to min
+        Node x = root;
+        while (x != null) {
+            if (!isRed(x)) black++;
+            x = x.left;
+        }
+        return isBalanced(root, black);
+    }
+
+    // does every path from the root to a leaf have the given number of black links?
+    private boolean isBalanced(Node x, int black) {
+        if (x == null) return black == 0;
+        if (!isRed(x)) black--;
+        return isBalanced(x.left, black) && isBalanced(x.right, black);
+    }
 
 }
