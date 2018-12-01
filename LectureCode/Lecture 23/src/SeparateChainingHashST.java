@@ -117,7 +117,46 @@ public class SeparateChainingHashST <Key, Value> {
      * @param val the value
      * @throws IllegalArgumentException if key is null
      */
+    public void put(Key key, Value val) {
+        if (key == null) throw new IllegalArgumentException("first argument to put() is null");
+        if (val == null) {
+            delete(key);
+            return;
+        }
 
+        // double table size if average length of list >= 10
+        if (n >= 10*m) resize(2 * m);
 
+        int i = hash(key);
+        if (!st[i].contains(key))   n++;
+        st[i].put(key, val);
+    }
+
+    /**
+     * Removes the specified key and its associated value from this symbol table
+     * (if the key is in this symbol table).
+     *
+     * @param key the key
+     * @throws IllegalArgumentException if key is null
+     */
+    public void delete(Key key) {
+        if (key == null) throw new IllegalArgumentException("argument to delete() is null");
+        int i = hash(key);
+        if (st[i].contains(key))    n--;
+        st[i].delete(key);
+
+        // halve table size if average length of list <= 2
+        if (m > INIT_CAPACITY && n <= 2*m) resize(m/2);
+    }
+
+    // return keys in symbol table as an Iterable
+    public Iterable<Key> keys() {
+        Queue<Key> queue = new Queue<Key> ();
+        for (int i = 0; i < m; i++) {
+            for (Key key: st[i].keys())
+                queue.enqueue(key);
+        }
+        return queue;
+    }
 
 }
