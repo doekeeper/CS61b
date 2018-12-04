@@ -47,7 +47,7 @@ public class Percolation {
             siteMap[row][col] = OPEN;                                                   // set the site(row, col) to OPEN
             n++;                                                                        // open site count + 1
             updateSiteConnection(row, col);                                             // update the connections around the newly opened site
-            if (percolates(row, col)) {                                                 // check if it is percolated
+            if (percolated(row, col)) {                                                 // check if it is percolated
                 percolated = true;                                                      // set percolated to true;
                 System.out.println("Percolated! It requires " + n + " open sites.");
                 return;
@@ -62,7 +62,7 @@ public class Percolation {
      * @param col
      * @return true if there is top row open site and bottom row open site in the same set of the site (row, col); return false otherwise
      */
-    public boolean percolates(int row, int col) {
+    public boolean percolated(int row, int col) {
         if (hasTopRowSite(row, col) && hasBottomRowSite(row, col) ) return true;
         return false;
     }
@@ -74,7 +74,7 @@ public class Percolation {
      * @return true if they are connected; false otherwise
      */
     private boolean hasTopRowSite(int row, int col) {
-        int p = 6 * row + col;
+        int p = this.col * row + col;
         for (int i = 0; i < this.col; i++) {
             int q = i;
             if (siteConnection.connected(p, q)) return true;
@@ -89,9 +89,9 @@ public class Percolation {
      * @return  true if they are connected; false otherwise
      */
     private boolean hasBottomRowSite(int row, int col) {
-        int p = 6 * row + col;
+        int p = this.col * row + col;
         for (int i = 0; i < this.col; i++) {
-            int q = 6 * (this.row - 1) + i;
+            int q = this.col * (this.row - 1) + i;
             if (siteConnection.connected(p, q)) return true;
         }
         return false;
@@ -166,8 +166,8 @@ public class Percolation {
      * @param col2
      */
     private void connect(int row1, int col1, int row2, int col2) {
-        int p = 6 * row1 + col1;
-        int q = 6 * row2 + col2;
+        int p = this.col * row1 + col1;
+        int q = this.col * row2 + col2;
         if (!siteConnection.connected(p, q)) {
             siteConnection.union(p, q);
         }
@@ -189,9 +189,17 @@ public class Percolation {
         return n;
      }
 
+    /**
+     * check if it percolates
+     * @return true if it percolates; false otherwise
+     */
+     public boolean percolates() {
+        return percolated;
+     }
+
      public static void main(String[] args) {
         Percolation sim = new Percolation(20);
-        while(!sim.percolated) {
+        while(!sim.percolates()) {
             int row = StdRandom.uniform(20);
             int col = StdRandom.uniform(20);
             sim.open(row, col);
