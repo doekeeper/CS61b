@@ -14,9 +14,8 @@ public interface Map61B<K, V> extends Iterable<K> {
     V get(K key);
 
     /* Returns true if this map contains a mapping for the specified key. */
-    default boolean containsKey(K key) {
-        return get(key) != null;
-    }
+
+    boolean containsKey(K key);
 
     /* Associates the specified value with the specified key in this map. */
     void put(K key, V value);

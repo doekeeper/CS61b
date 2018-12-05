@@ -6,9 +6,13 @@ import java.util.Set;
 /**
  * Implementation of interface Map61B with BST as core data structure.
  *
- * @author Your name here
+ * @author Yingduo Chen
  */
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
+
+    /**
+     * Node class contains one key, one value, and two Nodes (left Node, and right Node)
+     */
 
     private class Node {
         /* (K, V) pair stored in this Node. */
@@ -44,7 +48,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      *  or null if this map contains no mapping for the key.
      */
     private V getHelper(K key, Node p) {
-        throw new UnsupportedOperationException();
+        while (p != null) {
+            int cmp = key.compareTo(p.key);
+            if (cmp == 0) return p.value;
+            else if (cmp < 0) return getHelper(key, p.left);
+            else if (cmp > 0) return getHelper(key, p.right);
+        }
+        return null;
     }
 
     /** Returns the value to which the specified key is mapped, or null if this
@@ -52,7 +62,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        return getHelper(key, root);
     }
 
     /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
@@ -67,6 +77,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public void put(K key, V value) {
+        throw new UnsupportedOperationException();
+    }
+    /* Returns true if this map contains a mapping for the specified key. */
+    @Override
+    public boolean containsKey(K key) {
         throw new UnsupportedOperationException();
     }
 
