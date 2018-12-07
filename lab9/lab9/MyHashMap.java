@@ -8,7 +8,7 @@ import java.lang.Math;
  *  A hash table-backed Map implementation. Provides amortized constant time
  *  access to elements via get(), remove(), and put() in the best case.
  *
- *  @author Your name here
+ *  @author Yingduo Chen
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
 
@@ -37,7 +37,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     public boolean containsKey(K key) {
-        return false;
+        return get(key) != null;
     }
 
     /** Computes the hash function of the given key. Consists of
@@ -48,7 +48,6 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (key == null) {
             return 0;
         }
-
         int numBuckets = buckets.length;
         return Math.floorMod(key.hashCode(), numBuckets);
     }
@@ -58,19 +57,25 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        int loc = hash(key);
+        return buckets[loc].get(key);
     }
 
     /* Associates the specified value with the specified key in this map. */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        int loc = hash(key);
+        buckets[loc].put(key, value);
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        int size = 0;
+        for (int i = 0; i < buckets.length; i++) {
+            size = size + buckets[i].size();
+        }
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
