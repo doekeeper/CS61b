@@ -2,6 +2,7 @@ package lab9;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.lang.Math;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
@@ -33,6 +34,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         for (int i = 0; i < this.buckets.length; i += 1) {
             this.buckets[i] = new ArrayMap<>();
         }
+    }
+
+    public boolean containsKey(K key) {
+        return false;
     }
 
     /** Computes the hash function of the given key. Consists of
