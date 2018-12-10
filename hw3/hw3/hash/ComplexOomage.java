@@ -13,7 +13,7 @@ public class ComplexOomage implements Oomage {
     public int hashCode() {
         int total = 0;
         for (int x : params) {
-            total = total * 256;
+            total = total * 9;
             total = total + x;
         }
         return total;
@@ -76,6 +76,27 @@ public class ComplexOomage implements Oomage {
         ArrayList<Integer> params = new ArrayList<>(N);
         for (int i = 0; i < N; i += 1) {
             params.add(StdRandom.uniform(0, 255));
+        }
+        return new ComplexOomage(params);
+    }
+
+    /**
+     * return ComplexOomage with deadly parameters which provide the same hashcode for all ComplexOomage objects supplied
+     * The theory is that the current hashCode function of ComplexOomage is based on multiplication of 256,
+     * and it is equivalent to left-shift by 8-bits. hashCode is int type which is 32-bits.
+     * It indicates that if last 4 parameter is equivalent for any ComplexOomage object, its hashcode will be the same,
+     * regardless of the other parameters
+     * So deadlyComplexOomage() is designed to supply ComplexOomage object which has different parameters,
+     * though its last 4 parameter is the same, all objects will share the same hashcode
+     * This method is used for proving deficiency of ComplexOomage's hashCode() function.
+     * @param N: N should be equal or larger than 4
+     * @param val: val is the value of last 4 parameters in the object supplied. val is between 0 and 255 (inclusive).
+     * @return ComplexOomage object with different parameter, though the last 4 parameters are the same.
+     */
+    public static ComplexOomage deadlyComplexOomage(int N, int val) {
+        ArrayList<Integer> params = new ArrayList(N);
+        for (int i = 0; i < N; i++) {
+            params.add(val);
         }
         return new ComplexOomage(params);
     }
