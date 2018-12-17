@@ -56,8 +56,9 @@ public class WeightedQuickUnionPC {
      */
     public int find (int p) {
         validate(p);
-        while (p != parents[p]) {
-            p = parents[p];
+        int root = p;
+        while (root != parents[root]) {
+            root = parents[root];
         }
         return p;
     }
