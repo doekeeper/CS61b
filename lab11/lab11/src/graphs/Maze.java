@@ -1,4 +1,4 @@
-package lab11.graphs;
+package graphs;
 
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.In;
@@ -45,7 +45,7 @@ public class Maze implements Observer {
     public Iterable<Integer> adj(int v) {
         int x = toX(v);
         int y = toY(v);
-        TreeSet<Integer> neighbors = new TreeSet<Integer>();
+        TreeSet<Integer> neighbors = new TreeSet<>();
         if (!wallExists(x, y, "North")) {
             neighbors.add(xyTo1D(x, y + 1));
         }
