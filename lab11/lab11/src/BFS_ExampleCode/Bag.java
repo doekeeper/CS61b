@@ -26,9 +26,10 @@
  *  to
  *
  ******************************************************************************/
-
+package BFS_ExampleCode;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import edu.princeton.cs.algs4.*;
 
 /**
  *  The {@code Bag} class represents a bag (or multiset) of
@@ -50,6 +51,9 @@ import java.util.NoSuchElementException;
  *
  *  @param <Item> the generic type of an item in this bag
  */
+
+
+
 public class Bag<Item> implements Iterable<Item> {
     private Node<Item> first;    // beginning of bag
     private int n;               // number of elements in bag

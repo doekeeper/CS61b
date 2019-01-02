@@ -13,7 +13,11 @@
  * adjacent to a given vertex, which takes time proportional to the number of such vertices.
  */
 
+package BFS_ExampleCode;
+
 import java.util.NoSuchElementException;
+import edu.princeton.cs.algs4.*;
+
 public class Graph {
     private static final String NEWLINE = System.getProperty("line.separator"); // get system-dependent line separator (windows, linux, MacOS are different)
     private final int V;        // # of vertices in the graph
