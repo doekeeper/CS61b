@@ -4,6 +4,9 @@ package graphs;
  *  @author Josh Hug
  */
 public class MazeDepthFirstPaths extends MazeExplorer {
+    // MazeDepthFirstPaths extends MazeExplorer class, therefore, the following methods
+    // FYI, MazeExplorer extends Observable class
+
     /* Inherits public fields:
     public int[] distTo;
     public int[] edgeTo;
@@ -16,12 +19,12 @@ public class MazeDepthFirstPaths extends MazeExplorer {
 
 
     public MazeDepthFirstPaths(Maze m, int sourceX, int sourceY, int targetX, int targetY) {
-        super(m);
+        super(m);       // call parent constructor (MazeExplorer constructor)
         maze = m;
-        s = maze.xyTo1D(sourceX, sourceY);
-        t = maze.xyTo1D(targetX, targetY);
-        distTo[s] = 0;
-        edgeTo[s] = s;
+        s = maze.xyTo1D(sourceX, sourceY);      // set s to an integer based on the source vertex coordinates
+        t = maze.xyTo1D(targetX, targetY);      // set t to an integer based on the target vertex coordinates
+        distTo[s] = 0;                          // set s to source distance to 0 (of course)
+        edgeTo[s] = s;                          // set edge to s as s (weird but acceptable)
     }
 
     private void dfs(int v) {
