@@ -19,6 +19,11 @@ public class MazeCycles extends MazeExplorer {
         // TODO: Your code here!
     }
 
-    // Helper methods go here
+    private void DFSCycleDection() {
+        marked[0] = true;
+        for (int w : maze.adj(0)) {
+            if (maze.adj)
+        }
+    }
 }
 

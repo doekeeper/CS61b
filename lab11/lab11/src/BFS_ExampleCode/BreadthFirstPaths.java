@@ -60,7 +60,7 @@ public class BreadthFirstPaths {
     private void bfs(Graph G, int s) {
         Queue<Integer> q = new Queue<Integer>();
         for (int v = 0; v < G.V(); v++) {
-            // set all distTo[] to INFINITY - no vertice is connected to source s vertice
+            // set all distTo[] to INFINITY - no vertex is connected to source s vertex
             distTo[v] = INFINITY;
         }
         distTo[s] = 0;
