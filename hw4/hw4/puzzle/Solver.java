@@ -6,6 +6,7 @@ import edu.princeton.cs.algs4.MinPQ;
 public class Solver {
 
     private ArrayList<WorldState> solution;
+    private MinPQ<SearchNode> pq;
 
     /**
      * constructor which solves the puzzle, computing everything necessary for moves()
@@ -17,13 +18,13 @@ public class Solver {
         solution = new ArrayList<>();
 
         // priority queue
-        MinPQ<SearchNode> pq = new MinPQ<>();
+        pq = new MinPQ<>();
 
         // insert initial WorldState
         pq.insert(new SearchNode(initial, 0, null));
 
         /**
-         * remove the serach with minimum priority 'X'. If it is the goal node,
+         * remove the search with minimum priority 'X'. If it is the goal node,
          * then we're done. Otherwise,for each neighbor of X's world state, create
          * a new search node that obeys the description above and insert it into
          * priority queue.
@@ -40,9 +41,13 @@ public class Solver {
         SearchNode s = pq.min();
         while (s != null) {
             solution.add(0, s.getWorldState());
+            // always insert the WorldState in position 0, all the rest of items will be shifted toward right
             s = s.getPrev();
         }
 
+    }
+    public MinPQ<SearchNode> getPQ() {
+        return pq;
     }
 
     /**
@@ -50,14 +55,14 @@ public class Solver {
      * WorldState
      */
     public int moves() {
-        return -1;
+        return solution.size() - 1;
     }
 
     /**
      * @return returns a sequence of WorldStates from the initial WorldState to the solution.
      */
     public Iterable<WorldState> solution() {
-        return null;
+        return solution;
     }
 
     private class SearchNode implements Comparable<SearchNode> {
