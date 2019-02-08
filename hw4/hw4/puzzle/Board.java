@@ -1,44 +1,99 @@
 package hw4.puzzle;
 import java.util.ArrayList;
+import edu.princeton.cs.algs4.Queue;
 
 public class Board implements WorldState{
-    int[][] board;
+    int[] board;
+    int N;
 
     public Board(int[][] tiles) {
-        board = new int[tiles.length][tiles[0].length];
-        for(int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
-                board[i][j] = tiles[i][j];
+        int N = tiles.length;
+        board = new int[N * N];
+        for(int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                board[N * i + j] = tiles[i][j];
             }
         }
     }
 
     public int tileAt(int i, int j) {
-        return board[i][j];
+
+        return board[N * i + j];
     }
 
     public int size() {
-        return board.length * board[0].length;
+        return N * N;
     }
 
+    /**
+     * Answers from Josh Hug
+     * @return
+     */
     public Iterable<WorldState> neighbors() {
-        return null;
+        Queue<WorldState> neighbors = new Queue<> ();
+        int size = size();
+        int row = -1;
+        int col = -1;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (tileAt(i, j) == 0) {
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+        int[][] arr1 = new int[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                arr1[i][j] = tileAt(i, j);
+            }
+        }
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (Math.abs(-row + i) + Math.abs(-col + j) - 1 == 0) {
+                    arr1[row][col] = arr1[i][j];
+                    arr1[i][j] = 0;
+                    Board neighbor = new Board(arr1);
+                    neighbors.enqueue(neighbor);
+                    arr1[i][j] = arr1[row][col];
+                    arr1[row][col] = 0;
+                }
+            }
+        }
+        return neighbors;
     }
 
     public int hamming() {
-        return -1;
+        int count = 0;
+        for (int i = 0; i < N; i++) {
+            if (board[i] != 0 && (board[i] - i != 1)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public int manhattan() {
-        return -1;
+        int count = 0;
+        for (int i = 0; i < N; i++) {
+            if (board[i] != 0) {
+                int rowTarget = board[i] / N;
+                int colTarget = board[i] % N;
+                int row = i / N;
+                int col = i % N;
+                count = count + Math.abs(row - rowTarget) + Math.abs(col - colTarget);
+            }
+        }
+        return count;
     }
 
     public int estimatedDistanceToGoal() {
-        return -1;
+        return hamming();
     }
 
     public boolean equals(Object y) {
-        return false;
+        return (Integer) y == board[(Integer) y];
     }
 
     public String toString() {
