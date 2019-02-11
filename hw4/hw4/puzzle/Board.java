@@ -3,11 +3,11 @@ import java.util.ArrayList;
 import edu.princeton.cs.algs4.Queue;
 
 public class Board implements WorldState{
-    int[] board;
-    int N;
+    private int[] board;        // 1-D array representation of the puzzle
+    private int N;              // the length of input 2-D array
 
     public Board(int[][] tiles) {
-        int N = tiles.length;
+        N = tiles.length;
         board = new int[N * N];
         for(int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -31,9 +31,11 @@ public class Board implements WorldState{
      */
     public Iterable<WorldState> neighbors() {
         Queue<WorldState> neighbors = new Queue<> ();
-        int size = size();
+        int size = N;
         int row = -1;
         int col = -1;
+
+        // find out the location of zero; let "row" and "col" be the coordinate of "zero"
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (tileAt(i, j) == 0) {
@@ -42,13 +44,14 @@ public class Board implements WorldState{
                 }
             }
         }
+        // create a new 2-D array "arr1" and copy Board info to "arr1"
         int[][] arr1 = new int[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 arr1[i][j] = tileAt(i, j);
             }
         }
-
+        // find the neighbour board and enqueue in the queue "neighbors"
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (Math.abs(-row + i) + Math.abs(-col + j) - 1 == 0) {
@@ -66,7 +69,7 @@ public class Board implements WorldState{
 
     public int hamming() {
         int count = 0;
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < board.length; i++) {
             if (board[i] != 0 && (board[i] - i != 1)) {
                 count++;
             }
@@ -99,9 +102,9 @@ public class Board implements WorldState{
     public String toString() {
         StringBuilder s = new StringBuilder();
         int N = size();
-        s.append(N + "\n");
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        s.append((int) (Math.sqrt(N)) + "\n");
+        for (int i = 0; i < Math.sqrt(N); i++) {
+            for (int j = 0; j < Math.sqrt(N); j++) {
                 s.append(String.format("%2d ", tileAt(i,j)));
             }
             s.append("\n");

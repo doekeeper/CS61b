@@ -1,4 +1,3 @@
-/*
 
 package hw4.puzzle;
 import org.junit.Test;
@@ -26,6 +25,4 @@ public class TestBoard {
         x[1][1] = 1000;
         assertEquals("Your Board class is mutable and you should be making a copy of the values in the passed tiles array. Please see the FAQ!", 3, b.tileAt(1, 1));
     }
-} 
-
-*/
+}
