@@ -11,7 +11,7 @@ public class MergeSort {
      * @param   q2  A Queue in sorted order from least to greatest.
      * @return      The smallest item that is in q1 or q2.
      */
-    private static <Item extends Comparable> Item getMin(
+    protected static <Item extends Comparable> Item getMin(
             Queue<Item> q1, Queue<Item> q2) {
         if (q1.isEmpty()) {
             return q2.dequeue();
@@ -32,10 +32,17 @@ public class MergeSort {
     }
 
     /** Returns a queue of queues that each contain one item from items. */
-    private static <Item extends Comparable> Queue<Queue<Item>>
+    protected static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
         // Your code here!
-        return null;
+        Queue qOfQueue = new Queue<Queue<Item>>();
+
+        for (Item i: items) {
+            Queue q = new Queue<Item>();
+            q.enqueue(i);
+            qOfQueue.enqueue(q);
+        }
+        return qOfQueue;
     }
 
     /**
