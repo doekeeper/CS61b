@@ -45,15 +45,43 @@ public class TestMergeSort {
         assertEquals(q3.dequeue().toString(), q2.dequeue().toString());
     }
 
-    /*
     @Test
     public void testMergeSort() {
-
+        Queue q1 = new Queue<Integer>();
+        Queue q2 = new Queue<Integer>();
+        Queue q3 = new Queue<Integer>();
+        Queue q4 = new Queue<Integer>();
+        for (int i = 0; i < 10; i = i + 2) {
+            q1.enqueue(i);
+            q2.enqueue(i + 1);
+        }
+        for (int i = 0; i < 10; i++) {
+            q3.enqueue(i);
+        }
+        q4 = MergeSort.mergeSortedQueues(q1, q2);
+        while (!q3.isEmpty() && !q4.isEmpty()) {
+            assertEquals(q3.dequeue().toString(),q4.dequeue().toString());
+        }
     }
 
     @Test
     public void testMergeSortedQueues() {
+        Queue q1 = new Queue<Integer>();
+        Queue q2 = new Queue<Integer>();
+        Queue q3 = new Queue<Integer>();
 
+        for (int i = 0; i < 10; i = i + 2) {
+            q1.enqueue(i);
+        }
+        for (int i = 1; i < 10; i = i + 2) {
+            q1.enqueue(i);
+        }
+        for (int i = 0; i < 10; i++) {
+            q2.enqueue(i);
+        }
+        q3 = MergeSort.mergeSort(q1);
+        while(!q1.isEmpty() && !q2.isEmpty()) {
+            assertEquals(q2.dequeue(), q3.dequeue());
+        }
     }
-    */
 }
