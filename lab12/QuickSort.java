@@ -44,16 +44,26 @@ public class QuickSort {
      * @param greater   An empty Queue. When the function completes, this queue will contain
      *                  all of the items in unsorted that are greater than the given pivot.
      */
-    private static <Item extends Comparable> void partition(
+    protected static <Item extends Comparable> void partition(
             Queue<Item> unsorted, Item pivot,
             Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
         // Your code here!
+        for (Item item: unsorted) {
+            if (item.compareTo(pivot) < 0) {
+                less.enqueue(item);
+            } else if (item.compareTo(pivot) == 0) {
+                equal.enqueue(item);
+            } else if (item.compareTo(pivot) > 0) {
+                greater.enqueue(item);
+            }
+        }
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
         // Your code here!
+
         return items;
     }
 }
