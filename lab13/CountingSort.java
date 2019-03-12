@@ -13,15 +13,15 @@ public class CountingSort {
      * @param arr int array that will be sorted
      * @return the sorted array
      */
-    public static int[] naiveCountingSort(int[] arr) {
+    public static int[] naiveCountingSort(int[] arr) {  // input is an array, return value is also an array
         // find max
         int max = Integer.MIN_VALUE;
         for (int i : arr) {
-            max = max > i ? max : i;
+            max = max > i ? max : i;        // find max value in input array and store the value in max
         }
 
         // gather all the counts for each value
-        int[] counts = new int[max + 1];
+        int[] counts = new int[max + 1];    // max value of the array is required for creating the array
         for (int i : arr) {
             counts[i]++;
         }
@@ -32,7 +32,7 @@ public class CountingSort {
         int k = 0;
         for (int i = 0; i < counts.length; i += 1) {
             for (int j = 0; j < counts[i]; j += 1, k += 1) {
-                sorted[k] = i;
+                sorted[k] = i;          // sorted[] is output sorted array
             }
         }
 
@@ -67,6 +67,28 @@ public class CountingSort {
      */
     public static int[] betterCountingSort(int[] arr) {
         // TODO make counting sort work with arrays containing negative numbers.
-        return null;
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int i : arr) {
+            max = i > max ? i : max;
+            min = i < min ? i : min;
+        }
+        int[] count = new int[max - min + 1];
+        int offset = min < 0 ? (min * (-1)) : min;
+        for (int i : arr) {
+            count[i + offset]++;
+        }
+
+        int[] sorted = new int[arr.length];
+
+        int k = 0;
+
+        for (int i = 0; i < count.length; i++) {
+            for (int j = 0; j < count[i]; j++, k++) {
+                sorted[k] = i + offset;
+            }
+        }
+
+        return sorted;
     }
 }
