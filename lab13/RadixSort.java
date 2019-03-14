@@ -5,6 +5,32 @@
  *
  */
 public class RadixSort {
+
+    /**
+     * Find the length of the longest string in an array of strings
+     * @param a - an array of strings
+     * @return the length of longest String
+     */
+    private static int findLongestLength(String[] a) {
+        int longest = 0;
+        for (String s: a) {
+            if (s.length() > longest) longest = s.length();
+        }
+        return longest;
+    }
+
+    /**
+     * find the char presentation for specific char in a string
+     * @param i, ith string in the array
+     * @param d, dth char in the string
+     * @param a, input string array
+     * @return, if d >= 0 && d < a[i].length(), return a[i].charAt(d);
+     * else, return 0, which means least value to sort.
+     */
+    private static int findCharAtInString(int i, int d, String[] a) {
+        if (d < 0 || d >= a[i].length()) return 0;
+        return a[i].charAt(d);
+    }
     /**
      * Does LSD radix sort on the passed in array with the following restrictions:
      * The array can only have ASCII Strings (sequence of 1 byte characters)
@@ -16,8 +42,34 @@ public class RadixSort {
      * @return String[] the sorted array
      */
     public static String[] sort(String[] asciis) {
-        // TODO: Implement LSD Sort
-        return null;
+        int n = asciis.length;
+        int R = 256;        // extended ASCII alphabet size.
+        String[] aux = new String[n];
+        int w = findLongestLength(asciis);  // w is the length of the longest string in asciis
+        for (int d = w - 1; d >= 0; d--) {
+            // sort by key-indexed counting on dth character
+
+            // compute frequency counts
+            int[] count = new int[R + 1];
+            for (int i = 0; i < n; i++) {
+                int c = findCharAtInString(i, d, asciis);
+                count[c + 1]++;
+            }
+            //Transform counts to indices
+            for (int i = 1; i < R; i++) {
+                count[i + 1] += count[i];
+            }
+            // distribute the records
+            for (int i = 0; i < n; i++) {
+                int c = findCharAtInString(i, d, asciis);
+                aux[count[c]++] = asciis[i];
+            }
+            // copy back
+            for (int i = 0; i < n; i++) {
+                asciis[i] = aux[i];
+            }
+        }
+        return asciis;
     }
 
     /**
@@ -28,6 +80,8 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
+
+
         return;
     }
 
