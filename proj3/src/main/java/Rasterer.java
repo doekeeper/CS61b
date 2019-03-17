@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.math.*;
 
 /**
  * This class provides all code necessary to take a query box and produce
@@ -9,8 +10,16 @@ import java.util.Map;
  */
 public class Rasterer {
 
+    /**
+     * Fields
+     */
+    private String[][] render_grid;
+    private double raster_ul_lon, raster_ul_lat, raster_lr_lon, raster_lr_lat;
+    private int depth;
+    private boolean query_success;
+    final double[] LONDPP = {0.00034332, 0.00017166, 0.00008583, 0.00004291, 0.00002145, 0.00001073, 0.00000536, 0.00000268};
+
     public Rasterer() {
-        // YOUR CODE HERE
     }
 
     /**
@@ -42,11 +51,40 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
+        
         System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+
+        /**
+         * define parameters
+         */
+        double ullat, ullon, lrlat, lrlon, w, h;        // to store request's query parameters
+        ullat = params.get("ullat");        // upper left latitude
+        ullon = params.get("ullon");        // upper left longitude
+        lrlat = params.get("lrlat");        // lower right latitude
+        lrlon = params.get("lrlon");        // lower right longitude
+        w = params.get("w");                // width in pixels
+        h = params.get("h");                // height in pixels
+
+        /**
+         * determine depth's output images - the depth with greatest DonDPP that is less than or equal to LonDPP of querybox
+         * store the depth to depth;
+         */
+        double requestLonDPP = Math.abs((lrlon - ullon) / w);
+        for (int i = 0; i < 8; i++) {
+            if (LONDPP[i] <= requestLonDPP) {
+                depth = i;
+                break;
+            }
+        }
+        if (LONDPP[7] > requestLonDPP) depth = 7;
+
+
+
+
+
+
+
         return results;
     }
-
 }
