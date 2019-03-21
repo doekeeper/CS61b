@@ -22,10 +22,17 @@ public class CSCourseDB {
 
     private CSCourseDB(String dbPath) {
         try {
+            // define a factory API that enables applications to configure and obtain SAX-based parser to parse XML docs.
             SAXParserFactory factory = SAXParserFactory.newInstance();
+            // create a new instance of SAXParser using currently configured factory parameters
             SAXParser saxParser = factory.newSAXParser();
+            // instantiate CSCourseHandler - assign this db (CSCourseDB object) to db, assign null to lastCourse (CSCourseDB.Course class)
             CSCourseDBHandler prereqHandler = new CSCourseDBHandler(this);
+            //create a file 'in' object based on dbPath
             File in = new File(dbPath);
+            // parse the file specified as XML using the specified DefaultHandler
+            // here file is 'in', defaulthandler is 'prereqHandler'
+            // no return value
             saxParser.parse(in, prereqHandler);
         } catch (NullPointerException | ParserConfigurationException | SAXException | IOException
             e) {

@@ -49,6 +49,8 @@ public class GraphDB {
      */
     static String cleanString(String s) {
         return s.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+        // regex - regular expression, [^a-zA-Z] means any character that is not alphabet - punctuation and capitalization will be ignored
+        // then cleaned form of strings will be turned into lower case
     }
 
     /**
