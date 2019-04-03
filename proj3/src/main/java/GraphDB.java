@@ -7,6 +7,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -21,6 +24,7 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
+    public Map<Long, Vertex> verticsMap  = new HashMap<>();
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -28,14 +32,14 @@ public class GraphDB {
      */
     public GraphDB(String dbPath) {
         try {
-            File inputFile = new File(dbPath);
+            File inputFile = new File(dbPath); // creat a java representation of the file according the file (graph database) path;
             FileInputStream inputStream = new FileInputStream(inputFile);
             // GZIPInputStream stream = new GZIPInputStream(inputStream);
 
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             GraphBuildingHandler gbh = new GraphBuildingHandler(this);
-            saxParser.parse(inputStream, gbh);
+            saxParser.parse(inputStream, gbh);      //how saxParser.parse(FileInputStream, GraphBuildingHandler) works?
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
@@ -59,6 +63,7 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
+
         // TODO: Your code here.
     }
 
@@ -157,5 +162,55 @@ public class GraphDB {
      */
     double lat(long v) {
         return 0;
+    }
+
+    static class Vertex {
+        long id;
+        String name;
+        double lon;
+        double lat;
+        List<Long> adj;
+
+        Vertex(long id, double lon, double lat) {
+            this.id = id;
+            this.lon = lon;
+            this.lat = lat;
+            this.adj = new ArrayList<>();
+            // why ArrayList, not LinkedList here?
+            // LinkedList is better at add and remove; ArrayList is better at get and set
+        }
+        void setName(String name) {
+            this.name = name;
+        }
+
+        void connectTo(long vertexId) {
+            adj.add(vertexId);
+        }
+    }
+
+    static class Edge{
+        private long id;
+        private String name;
+        private List<Long> vertexList;
+        Edge(long id, List<Long> vertexList) {
+            this.id = id;
+            this.vertexList = vertexList;
+        }
+        void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    static class Location {
+        long id;
+        String name;
+        double lon;
+        double lat;
+        Location(long id, double lon, double lat, String name) {
+            this.id = id;
+            this.name = name;
+            this.lon = lon;
+            this.lat = lat;
+        }
     }
 }
