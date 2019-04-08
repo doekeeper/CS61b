@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.TrieST;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -25,6 +26,9 @@ public class GraphDB {
      * creating helper classes, e.g. Node, Edge, etc. */
 
     public Map<Long, Vertex> verticsMap  = new HashMap<>();
+    private Map<Long, Edge> edgesMap = new HashMap<>();
+    // Trie is a string-symbol table for extended ASCII strings, implemented using a 256-way trie.
+    public TrieST<Location> locationTrieST = new TrieST<>();
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -32,7 +36,7 @@ public class GraphDB {
      */
     public GraphDB(String dbPath) {
         try {
-            File inputFile = new File(dbPath); // creat a java representation of the file according the file (graph database) path;
+            File inputFile = new File(dbPath); // create a java representation of the file according the file (graph database) path;
             FileInputStream inputStream = new FileInputStream(inputFile);
             // GZIPInputStream stream = new GZIPInputStream(inputStream);
 
