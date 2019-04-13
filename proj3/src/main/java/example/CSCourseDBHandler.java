@@ -11,7 +11,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Mo
  */
 public class CSCourseDBHandler extends DefaultHandler {
-    private final CSCourseDB db;
+    private final CSCourseDB db;        // immutable when it is instantiated
     private String activeState = "";
     private CSCourseDB.Course lastCourse;
     private String from;
@@ -42,15 +42,18 @@ public class CSCourseDBHandler extends DefaultHandler {
         throws SAXException {
 
         if (qName.equals("course")) {
-            activeState = "course";
+            activeState = "course";     // what is activeState
+            // create a course instance with its 'id' and 'division'
+            // 'id' is obtained by attributes.getValue("id")
+            // 'division' is obtained by attributes.getValue("division")
             CSCourseDB.Course c = new CSCourseDB.Course(attributes.getValue("id"),
                 attributes.getValue("division"));
-            db.addCourse(c);
-            lastCourse = c;
-        } else if (qName.equals("req")) {
+            db.addCourse(c);        // add course c to db
+            lastCourse = c;         // last course added to db is c, but why tracks it?
+        } else if (qName.equals("req")) {       // if qName is "req", set activeState as "req", and set lastCourse as "null"
             activeState = "req";
             lastCourse = null;
-        } else if (activeState.equals("req") && qName.equals("from")) {
+        } else if (activeState.equals("req") && qName.equals("from")) {     // if activeState is 'req' and qName is 'from', set from
             from = attributes.getValue("ref");
         } else if (activeState.equals("req") && qName.equals("to")) {
             to = attributes.getValue("ref");
@@ -73,6 +76,8 @@ public class CSCourseDBHandler extends DefaultHandler {
      */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+        // when req element is ended, store (from, to) pair in db by this.db.addPrereq(from, to)
+        // reset from and to back to null after the operation above.
         if (qName.equals("req")) {
             this.db.addPrereq(from, to);
             from = null;

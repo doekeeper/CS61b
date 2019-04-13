@@ -25,9 +25,10 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
-    public Map<Long, Vertex> verticsMap  = new HashMap<>();
+    public Map<Long, Vertex> verticsMap  = new HashMap<>();     // vertex will be node in osm
     private Map<Long, Edge> edgesMap = new HashMap<>();
     // Trie is a string-symbol table for extended ASCII strings, implemented using a 256-way trie.
+    // Trie is good for storing strings, but might be a bit waste of storage space
     public TrieST<Location> locationTrieST = new TrieST<>();
     /**
      * Example constructor shows how to create and start an XML parser.
