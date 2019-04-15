@@ -92,7 +92,6 @@ public class CSCourseDB {
             StringBuilder sb = new StringBuilder();
             sb.append("=========COURSE ID: ").append(id).append("=========\n");
             sb.append("* Division: ").append(division).append('\n');
-
             /* Print extra information about the course if available. */
             if (!extraInfo.isEmpty()) {
                 sb.append("* Extra Information:\n");
@@ -124,6 +123,6 @@ public class CSCourseDB {
      */
     public static void main(String[] args) {
         CSCourseDB db = new CSCourseDB("berkeley-cs.xml");
-        System.out.println(db);
+        System.out.println(db);     // println(object) will print db.toString(); By default, it would be the ClassName@Hashcode, unless toString() is overridden
     }
 }

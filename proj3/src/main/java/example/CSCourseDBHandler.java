@@ -53,11 +53,11 @@ public class CSCourseDBHandler extends DefaultHandler {
         } else if (qName.equals("req")) {       // if qName is "req", set activeState as "req", and set lastCourse as "null"
             activeState = "req";
             lastCourse = null;
-        } else if (activeState.equals("req") && qName.equals("from")) {     // if activeState is 'req' and qName is 'from', set from
+        } else if (activeState.equals("req") && qName.equals("from")) {     // if activeState is 'req' and qName is 'from', set from to the input value (attributes.getValue("ref")
             from = attributes.getValue("ref");
-        } else if (activeState.equals("req") && qName.equals("to")) {
+        } else if (activeState.equals("req") && qName.equals("to")) {       // if activeState is 'req' and qName is 'from', set to to the input value (attributes.getValue("ref")
             to = attributes.getValue("ref");
-        } else if (activeState.equals("course") && qName.equals("tag")) {
+        } else if (activeState.equals("course") && qName.equals("tag")) {   // if activeState is "course" and qName is "tag", store k/v value pair to lastCourse.extraInfo
             lastCourse.extraInfo.put(attributes.getValue("k"), attributes.getValue("v"));
         }
     }

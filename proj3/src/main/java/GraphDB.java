@@ -25,8 +25,9 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
-    public Map<Long, Vertex> verticsMap  = new HashMap<>();     // vertex will be node in osm
-    private Map<Long, Edge> edgesMap = new HashMap<>();
+    public final Map<String, Integer> bound = new HashMap<>();  // bound for store bound info ('minlat', 'maxlat', 'minlon', 'maxlon')
+    public Map<Long, Vertex> verticesMap  = new HashMap<>();     // vertex will be 'node' in osm xml file
+    public Map<Long, Edge> edgesMap = new HashMap<>();         // edge will be 'way' in osm xml file
     // Trie is a string-symbol table for extended ASCII strings, implemented using a 256-way trie.
     // Trie is good for storing strings, but might be a bit waste of storage space
     public TrieST<Location> locationTrieST = new TrieST<>();
@@ -68,8 +69,15 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-
-        // TODO: Your code here.
+        // YOUR CODE HERE.
+        // Iterate through Vertex Map, if one vertex.adj is empty, then remove the vertex from vertex map
+        // ??? how to iterate through a HashMap?
+        for (long k : vertices()) {       // iterate through all keys in verticesMap (HashMap)
+            Vertex v = verticesMap.get(k);          // obtain value (Vertex) according to the key
+            if (v.getAdj().isEmpty()) {             // if a vertex has an empty adj() (no adj, not connected at all, remove it from database)
+                verticesMap.remove(k);
+            }
+        }
     }
 
     /**
@@ -78,7 +86,7 @@ public class GraphDB {
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return verticesMap.keySet();
     }
 
     /**
@@ -87,7 +95,9 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        // YOUR CODE HERE
+
+        return verticesMap.get(v).getAdj();
     }
 
     /**
@@ -148,7 +158,19 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        // YOUR CODE HERE
+        // errorhandling - if input (lon, lat) is out of map's boundary - handle the error properly
+        double distance = Double.POSITIVE_INFINITY;
+        long id = 0;
+        for (long k : verticesMap.keySet()) {
+            Vertex v = verticesMap.get(k);
+            double updatedDistance = distance(lon, lat, lon(k), lat(k));
+            if (updatedDistance < distance) {
+                distance = updatedDistance;
+                id = k;
+            }
+        }
+        return id;
     }
 
     /**
@@ -157,7 +179,9 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        // YOUR CODE HERE
+        Vertex vertex = verticesMap.get(v);
+        return vertex.getLon();
     }
 
     /**
@@ -166,45 +190,112 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        // YOUR CODE HERE
+        Vertex vertex = verticesMap.get(v);
+        return vertex.getLat();
     }
 
+    /**
+     * class Vertex is the data structure for storing info for each node
+     * Long id, for instance, 318886226
+     * double lat, lon for latitude and longitude of each node
+     * Map<String, String> tags for storing tags info (K, V)
+     * List<Long> adj for storing adjacent nodes
+     */
     static class Vertex {
-        long id;
-        String name;
-        double lon;
-        double lat;
-        List<Long> adj;
+        private long id;
+        // String name;
+        private double lon;
+        private double lat;
+        private Map<String, String> tags;
+        private List<Long> adj;
 
         Vertex(long id, double lon, double lat) {
             this.id = id;
             this.lon = lon;
             this.lat = lat;
+            tags = new HashMap<>();
             this.adj = new ArrayList<>();
             // why ArrayList, not LinkedList here?
             // LinkedList is better at add and remove; ArrayList is better at get and set
         }
+        /*
         void setName(String name) {
             this.name = name;
         }
+        */
 
-        void connectTo(long vertexId) {
+        /**
+         * add tag (K, V) in tags
+         * @param k
+         * @param v
+         */
+        public void addTag(String k, String v) {
+            tags.put(k, v);
+        }
+
+        /**
+         * store adjacent nodes
+         * @param vertexId
+         */
+        public void connectTo(long vertexId) {
             adj.add(vertexId);
         }
+
+        /**
+         * get methods
+         */
+        public List<Long> getAdj() {
+            return adj;
+        }
+        public double getLon() {
+            return lon;
+        }
+        public double getLat() {
+            return lat;
+        }
     }
 
+    /**
+     * class Edge is the data structure for storing edge element, it includes:
+     * Long id, edge's id
+     * List<Long> vertexList, a list of nodes on the edge
+     *
+     */
     static class Edge{
-        private long id;
-        private String name;
-        private List<Long> vertexList;
-        Edge(long id, List<Long> vertexList) {
+        private long id;        // edge's id
+        // private String name;
+        private List<Long> vertexList;      // vertex on the edge
+        private Map<String, String> tags;   // for storing tags (K, V)
+
+        Edge(long id, List<Long> vertexList) {      // constructor
             this.id = id;
             this.vertexList = vertexList;
+            tags = new HashMap<>();
         }
+        Edge() {                                    // default constructor
+            vertexList = new ArrayList<>();
+            tags = new HashMap<>();
+        }
+
+        /**
+         * add vertex in vertex list
+         * @param id
+         */
+        public void addVertex(Long id) {
+            vertexList.add(id);
+        }
+
+        /**
         void setName(String name) {
             this.name = name;
         }
+         */
+        public void addTags(String k, String v) {
+            tags.put(k, v);
+        }
     }
+
 
     static class Location {
         long id;
@@ -217,5 +308,15 @@ public class GraphDB {
             this.lon = lon;
             this.lat = lat;
         }
+    }
+
+    /**
+     *
+     */
+    public void connect(long v, long w) {
+        Vertex v_vertex = verticesMap.get(v);
+        Vertex w_vertex = verticesMap.get(w);
+        v_vertex.connectTo(w);
+        w_vertex.connectTo(v);
     }
 }
