@@ -38,6 +38,13 @@ public class GraphBuildingHandler extends DefaultHandler {
                     "secondary_link", "tertiary_link"));
     private String activeState = "";
     private final GraphDB g;
+    private final long EMPTY = -1;
+    private long lastVertex = EMPTY;
+    private long currentVertex = EMPTY;
+    private long way_id = EMPTY;
+    private long node_id = EMPTY;
+    private double node_lon = Double.POSITIVE_INFINITY;
+    private double node_lat = Double.POSITIVE_INFINITY;
 
     /**
      * Create a new GraphBuildingHandler.
@@ -64,9 +71,6 @@ public class GraphBuildingHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
-        final long EMPTY = -1;
-        long lastVertex = EMPTY;
-        long currentVertex = EMPTY;
         /* Some example code on how you might begin to parse XML files. */
         if (qName.equals("node")) {
             /* We encountered a new <node...> tag. */
@@ -77,14 +81,19 @@ public class GraphBuildingHandler extends DefaultHandler {
 
             /* Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
-            long id = Long.parseLong(attributes.getValue("id"));
-            double lon = Double.parseDouble(attributes.getValue("lon"));
-            double lat = Double.parseDouble(attributes.getValue("lat"));
-            GraphDB.Vertex v = new GraphDB.Vertex(id, lon, lat);
+            node_id = Long.parseLong(attributes.getValue("id"));
+            node_lon = Double.parseDouble(attributes.getValue("lon"));
+            node_lat = Double.parseDouble(attributes.getValue("lat"));
+            GraphDB.Vertex v = new GraphDB.Vertex(node_id, node_lon, node_lat);
+            g.verticesMap.put(node_id, v);
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
             activeState = "way";
+            way_id = Long.parseLong(attributes.getValue("id"));
+            GraphDB.Edge e = new GraphDB.Edge();      // create an instance of way
+            g.edgesMap.put(way_id, e);
+
 //            System.out.println("Beginning a way...");
         } else if (activeState.equals("way") && qName.equals("nd")) {
             /* While looking at a way, we found a <nd...> tag. */
@@ -109,7 +118,6 @@ public class GraphBuildingHandler extends DefaultHandler {
             }
 
         } else if (activeState.equals("way") && qName.equals("tag")) {
-            long way_id = Long.parseLong(attributes.getValue("id"));        // Determine the id of the way
             GraphDB.Edge e = g.edgesMap.get(way_id);                                // identify the way object from g.edgesMap from db
             /* While looking at a way, we found a <tag...> tag. */
             String k = attributes.getValue("k");
@@ -128,15 +136,11 @@ public class GraphBuildingHandler extends DefaultHandler {
                 e.addTags(k, v);
             }
 //            System.out.println("Tag with k=" + k + ", v=" + v + ".");
-        } else if (activeState.equals("node") && qName.equals("tag") && attributes.getValue("k")
-                .equals("name")) {
+        } else if (activeState.equals("node") && qName.equals("tag") && attributes.getValue("k").equals("name")) {
             /* While looking at a node, we found a <tag...> with k="name". */
             /* TODO Create a location. */
-            long id = Long.parseLong(attributes.getValue("id"));
-            double lon = Double.parseDouble(attributes.getValue("lon"));
-            double lat = Double.parseDouble(attributes.getValue("lat"));
-            String locationName = attributes.getValue("v");
-            GraphDB.Location l = new GraphDB.Location(id, lon, lat, locationName);
+            String locationName = GraphDB.cleanString(attributes.getValue("v"));
+            GraphDB.Location l = new GraphDB.Location(node_id, node_lon, node_lat, locationName);
             g.locationTrieST.put(locationName, l);
             /* Hint: Since we found this <tag...> INSIDE a node, we should probably remember which
             node this tag belongs to. Remember XML is parsed top-to-bottom, so probably it's the
@@ -159,13 +163,14 @@ public class GraphBuildingHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (qName.equals("way")) {
-            // TODO
+            // when the way element is ended, set lastVertex and currentVertex to EMPTY
+            lastVertex = EMPTY;
+            currentVertex = EMPTY;
             /* We are done looking at a way. (We finished looking at the nodes, speeds, etc...)*/
             /* Hint1: If you have stored the possible connections for this way, here's your
             chance to actually connect the nodes together if the way is valid. */
 //            System.out.println("Finishing a way...");
 
-            // ?????? How to endElement?
         }
     }
 

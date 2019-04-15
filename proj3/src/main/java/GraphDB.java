@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -49,7 +51,7 @@ public class GraphDB {
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
-        clean();
+        clean();            // cannot remove items when iterating through the iterables - otherwise, ConcurrentModificationException will be triggered
     }
 
     /**
@@ -72,11 +74,15 @@ public class GraphDB {
         // YOUR CODE HERE.
         // Iterate through Vertex Map, if one vertex.adj is empty, then remove the vertex from vertex map
         // ??? how to iterate through a HashMap?
+        Set<Long> isolatedVertices = new HashSet<>();       // store all the keys to the vertices which are isolated (no adjacent vertices at all)
         for (long k : vertices()) {       // iterate through all keys in verticesMap (HashMap)
             Vertex v = verticesMap.get(k);          // obtain value (Vertex) according to the key
             if (v.getAdj().isEmpty()) {             // if a vertex has an empty adj() (no adj, not connected at all, remove it from database)
-                verticesMap.remove(k);
+                isolatedVertices.add(k);
             }
+        }
+        for (long k : isolatedVertices) {
+            verticesMap.remove(k);
         }
     }
 
