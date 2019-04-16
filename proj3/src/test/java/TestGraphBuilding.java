@@ -64,12 +64,17 @@ public class TestGraphBuilding {
     }
 
     @Test
+    public void testAdjacentCase1() {
+
+    }
+    @Test
     public void testAdjacent() {
         long v = 3347105714L;
         HashSet<Long> expected = new HashSet<>();
         HashSet<Long> actual = new HashSet<>();
         expected.add(1026001234L);
         expected.add(2291835223L);
+        expected.add(3347105715L);
 
         for (long neighbor : graph.adjacent(v)) {
             actual.add(neighbor);
