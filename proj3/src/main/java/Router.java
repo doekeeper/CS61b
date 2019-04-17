@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -25,7 +26,18 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
+        //TODO Return a shortest path from the node closest to a start location and the node closest to the destination location
+        /**
+         * 1. identify the node closest to start location (given its lat and lon)
+         * 2. identify the node closest to destination location (given its lat and lon)
+         * 3. apply shortest path algorithm (Dijkstra's algorithm first, then A*) to find the route
+         */
+        long stVertex = g.closest(stlon, stlat);
+        long destVertex = g.closest(destlon, destlat);
+        List<Long> sp = new LinkedList<>();     // store vertices that construct the shortest path between st and dest
+
         return null; // FIXME
+
     }
 
     /**
@@ -37,6 +49,8 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
+
+        //TODO
         return null; // FIXME
     }
 
