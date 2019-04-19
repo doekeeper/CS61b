@@ -15,28 +15,46 @@ import java.util.Set;
 
 public class ShortestPath {
 
-    Map<String, Vertex> g = new HashMap<>();
 
+    public static void main(String[] args) {
+        EdgeWeightedGraph g = new EdgeWeightedGraph();
 
-    /**
-     * object which contains information of a vertex
-     */
-    static class Vertex {
-        String id;      // store id
-        private Map<Vertex, Integer> adj = new HashMap<>();      // store adjacent nodes and the corresponding weight
+        // create 5 vertices
+        Vertex A = new Vertex("A");
+        Vertex B = new Vertex("B");
+        Vertex C = new Vertex("C");
+        Vertex D = new Vertex("D");
+        Vertex E = new Vertex("E");
 
-        // constructor
-        public Vertex(String id) {
-            this.id = id;
-        }
+        // add 5 vertices in the graph
+        g.addVertex(A);
+        g.addVertex(B);
+        g.addVertex(C);
+        g.addVertex(D);
+        g.addVertex(E);
 
-        /**
-         *
-         * @return
-         */
-        public Iterable<Vertex, Integer> getAdj() {
+        // create 7 edges
+        WeightedEdge AC = new WeightedEdge("A", "C", 1);
+        WeightedEdge AB = new WeightedEdge("A", "B", 3);
+        WeightedEdge BC = new WeightedEdge("B", "C", 7);
+        WeightedEdge BD = new WeightedEdge("B", "D", 5);
+        WeightedEdge BE = new WeightedEdge("B", "E", 1);
+        WeightedEdge CD = new WeightedEdge("C", "D", 2);
+        WeightedEdge DE = new WeightedEdge("D", "E", 7);
 
-        }
+        // add 7 edges in the graph
+        g.addEdge(AC);
+        g.addEdge(AB);
+        g.addEdge(BC);
+        g.addEdge(BD);
+        g.addEdge(BE);
+        g.addEdge(CD);
+        g.addEdge(DE);
+
+        // Graph with 5 vertices and 7 edges should be constructed by now
+
+        // the next step is to find the shortest path
+
     }
 
 }
