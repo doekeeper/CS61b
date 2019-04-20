@@ -18,10 +18,16 @@ public class ShortestPath {
     Map<String, Integer> distanceTo = new HashMap<>();  // Map for storing distanceTo all Vertex in the map
     Set<WeightedEdge> SPT = new HashSet<>();        // set of all the edges in the shortest path tree
     EdgeWeightedGraph g;
+    Map<String, Queue<String>> path = new HashMap<>();
+
 
     public ShortestPath(EdgeWeightedGraph g, String startID) {
         this.g = g;
         this.startVertexID = startID;
+        // add path to start vertex - initialization
+        Queue<String> q = new ArrayDeque<>();
+        q.add(startID);
+        path.put(startID, q);
     }
 
     public void shortestPath() {
@@ -41,6 +47,10 @@ public class ShortestPath {
                 String adjVertexID = e.other(currentVertexID);  // adjacent vertex id
                 if(e.getLength() + distanceTo.get(currentVertexID) < distanceTo.get(adjVertexID)) {
                     distanceTo.put(adjVertexID, e.getLength() + distanceTo.get(currentVertexID));
+                    // update path to adjacent vertex
+                    Queue<String> pathToAdjVertex = new ArrayDeque<>(path.get(currentVertexID));
+                    pathToAdjVertex.add(adjVertexID);
+                    path.put(adjVertexID, pathToAdjVertex);
                 }
                 if(! visited.contains(e.other(currentVertexID))) nextVertex.add(e.other(currentVertexID));
             }
