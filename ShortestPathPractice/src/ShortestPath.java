@@ -1,9 +1,6 @@
 // inspiration from: https://www.codingame.com/playgrounds/1608/shortest-paths-with-dijkstras-algorithm/dijkstras-algorithm
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Create a weighted graph with 5 vertices and 7 weighted edges,
@@ -15,6 +12,46 @@ import java.util.Set;
 
 public class ShortestPath {
 
+    String startVertexID;      // start vertex is C
+    String currentVertexID;
+    Set<String> visited = new HashSet<>();       // set of visited vertices
+    Map<String, Integer> distanceTo = new HashMap<>();  // Map for storing distanceTo all Vertex in the map
+    Set<WeightedEdge> SPT = new HashSet<>();        // set of all the edges in the shortest path tree
+    EdgeWeightedGraph g;
+
+    public ShortestPath(EdgeWeightedGraph g, String startID) {
+        this.g = g;
+        this.startVertexID = startID;
+    }
+
+    public void shortestPath() {
+        currentVertexID = startVertexID;
+        // initialize the distanceTo; distance = 0 for startVertex, distance = Integer.MAX_VALUE for the rest of vertices
+        for (String id: g.verticesID()) {
+            if (id.equals(startVertexID)) distanceTo.put(id, 0);
+            else distanceTo.put(id, Integer.MAX_VALUE);
+        }
+        visited.add(currentVertexID);       // marked current vertex as visited
+
+        Queue<String> nextVertex = new PriorityQueue<>();
+        // set non-visited node with the smallest current distance as the current node
+        while (!allVerticesVisited()) {     // continue if there is still unvisited vertex
+            // iterate through all the adjacent edges of current vertex, update the distance of nearby vertex
+            for (WeightedEdge e : g.adj(currentVertexID)) {
+                String adjVertexID = e.other(currentVertexID);  // adjacent vertex id
+                if(e.getLength() + distanceTo.get(currentVertexID) < distanceTo.get(adjVertexID)) {
+                    distanceTo.put(adjVertexID, e.getLength() + distanceTo.get(currentVertexID));
+                }
+                if(! visited.contains(e.other(currentVertexID))) nextVertex.add(e.other(currentVertexID));
+            }
+            visited.add(currentVertexID);
+            currentVertexID = nextVertex.remove();
+        }
+    }
+
+    private boolean allVerticesVisited() {
+        return visited.size() == g.verticesID().size();
+    }
 
     public static void main(String[] args) {
         EdgeWeightedGraph g = new EdgeWeightedGraph();
@@ -51,10 +88,13 @@ public class ShortestPath {
         g.addEdge(CD);
         g.addEdge(DE);
 
-        // Graph with 5 vertices and 7 edges should be constructed by now
-
-        // the next step is to find the shortest path
-
+        ShortestPath sp = new ShortestPath(g, "C");
+        sp.shortestPath();
+        /**
+        for (WeightedEdge e: sp.shortestPath()) {
+             System.out.println(e.toString());
+        }
+         */
     }
 
 }
