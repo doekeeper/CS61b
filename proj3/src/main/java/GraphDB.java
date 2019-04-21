@@ -90,7 +90,7 @@ public class GraphDB {
      * Returns an iterable of all vertex IDs in the graph.
      * @return An iterable of id's of all vertices in the graph.
      */
-    Iterable<Long> vertices() {
+    Set<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
         return verticesMap.keySet();
     }

@@ -1,6 +1,5 @@
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +23,7 @@ public class Router {
      * @param destlat The latitude of the destination location.
      * @return A list of node id's in the order visited on the shortest path.
      */
+
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
         //TODO Return a shortest path from the node closest to a start location and the node closest to the destination location
@@ -34,11 +34,79 @@ public class Router {
          */
         long stVertex = g.closest(stlon, stlat);
         long destVertex = g.closest(destlon, destlat);
-        List<Long> sp = new LinkedList<>();     // store vertices that construct the shortest path between st and dest
 
-        return null; // FIXME
+        List<Long> sp = SPviaDijkstra(g, stVertex, destVertex);
 
+        return sp; // FIXME
     }
+
+    private static List<Long> SPviaDijkstra(GraphDB g, long stVertex, long destVertex) {
+        Map<Long, Double> distanceTo = new HashMap<>();     //distanceTo each node
+        Set<Long> visited = new HashSet<>();                // set for storing visited vertex
+        Map<Long, Deque<Long>> pathTo = new HashMap<>();    // Map for storing path to each vertex in the map;
+
+        // initialize the path to stVertex
+        Deque<Long> pathTostVertex = new ArrayDeque<>();
+        pathTostVertex.add(stVertex);
+        pathTo.put(stVertex, pathTostVertex);
+
+        /**
+         * wrapper for next vertex to visit
+         */
+        class VertexWrapper implements Comparable<VertexWrapper> {
+
+            Long v;                 // vertex's id
+            Double d;               // distance to start vertex
+
+
+            public VertexWrapper(Long v) {
+                this.v = v;
+                this.d = distanceTo.get(v);
+            }
+
+            @Override
+            public int compareTo (VertexWrapper vw) {
+                return (int) (this.d - vw.d);
+            }
+        }
+        Queue<VertexWrapper> nextV = new PriorityQueue<>();          // priority queue for storing next vertices to visit
+
+
+        //TODO
+        long st = stVertex;     // start vertex;
+        long current = st;      // set current vertex to start vertex;
+
+        // initialize distanceTo - every vertex in positive infinity distance, except start vertex itself (set to 0)
+        for (Long v : g.vertices()) {
+            distanceTo.put(v, Double.POSITIVE_INFINITY);
+        }
+        distanceTo.put(st, 0.0);
+
+        // iterate through all the vertex
+        while (current == stVertex || !nextV.isEmpty()) {
+            for (Long v : g.adjacent(current)) {        // iterate through all the adjacent vertex of current vertex
+                if (!visited.contains(v) && distanceTo.get(current) + g.distance(current, v) < distanceTo.get(v)) {// execute only if v vertex is never visited
+                    distanceTo.put(v, distanceTo.get(current) + g.distance(current, v));        // update the distanceTo(v)
+                    Deque pathToV = new ArrayDeque(pathTo.get(current));
+                    pathToV.add(v);
+                    pathTo.put(v, pathToV);
+                    VertexWrapper vw = new VertexWrapper(v);
+                    nextV.add(vw);
+                }
+            }
+            visited.add(current);
+            if (!nextV.isEmpty()) {
+                current = nextV.remove().v;
+            }
+        }
+        List<Long> l = new ArrayList<>();
+        //TODO - java.lang.NullPointerException
+        for (Iterator<Long> i = pathTo.get(destVertex).iterator(); i.hasNext();) {
+            l.add(i.next());
+        }
+        return l;
+    }
+
 
     /**
      * Create the list of directions corresponding to a route on the graph.
